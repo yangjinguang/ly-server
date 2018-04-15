@@ -26,8 +26,12 @@ public class HelloController {
     @ResponseBody
     @RequestMapping(value = "/hello", method = RequestMethod.GET)
     public APIResponse hello() {
-        List<Account> list = accountService.List();
-        return APIResponse.success(list);
+        List<Account> accounts = accountService.list();
+        for (Account account : accounts) {
+            account.setPassword(null);
+            account.setSalt(null);
+        }
+        return APIResponse.success(accounts);
     }
 
     @ApiOperation(value = "哦哦", notes = "world")

@@ -1,4 +1,4 @@
-package com.liyu.server.secruity;
+package com.liyu.server.model;
 
 public class AccountCredentials {
     private String username;

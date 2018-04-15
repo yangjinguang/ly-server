@@ -1,5 +1,7 @@
 package com.liyu.server.secruity;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -8,12 +10,21 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+    @Bean
+    public static CustomAuthenticationProvider customAuthenticationProvider() {
+        return new CustomAuthenticationProvider();
+    }
+
+    @Autowired
+    private CustomAuthenticationProvider customAuthenticationProvider;
 
     // 设置 HTTP 验证规则
     @Override
@@ -49,7 +60,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         // 使用自定义身份验证组件
-        auth.authenticationProvider(new CustomAuthenticationProvider());
+        auth.authenticationProvider(customAuthenticationProvider);
 
     }
 

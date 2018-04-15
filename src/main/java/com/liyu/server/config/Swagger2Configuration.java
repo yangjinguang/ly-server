@@ -24,7 +24,7 @@ public class Swagger2Configuration {
     public Docket createRestApi() {
         ParameterBuilder tokenPar = new ParameterBuilder();
         List<Parameter> pars = new ArrayList<Parameter>();
-        tokenPar.name("Authorization").description("Access Token").modelRef(new ModelRef("string")).parameterType("header").required(false).build();
+        tokenPar.name("Authorization").description("Access Token").modelRef(new ModelRef("string")).parameterType("header").required(true).build();
         pars.add(tokenPar.build());
         return new Docket(DocumentationType.SWAGGER_2)
                 .globalOperationParameters(pars)
@@ -32,7 +32,7 @@ public class Swagger2Configuration {
                 .useDefaultResponseMessages(true)
                 .forCodeGeneration(false)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.liyu.server.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.liyu.server"))
                 .paths(PathSelectors.any())
                 .build()
                 .apiInfo(apiInfo());

@@ -1,6 +1,7 @@
 package com.liyu.server.secruity;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.stereotype.Service;
 
 public class GrantedAuthorityImpl implements GrantedAuthority {
     private String authority;
