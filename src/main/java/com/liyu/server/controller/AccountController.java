@@ -51,7 +51,16 @@ public class AccountController {
     @RequestMapping(value = "/{id}", method = RequestMethod.POST)
     public APIResponse create(@PathVariable Long id,
                               @RequestBody Account updateData) {
-        Account account = accountService.udate(ULong.valueOf(id), updateData);
+        Account account = accountService.update(ULong.valueOf(id), updateData);
         return APIResponse.success(account);
+    }
+
+    @ApiOperation(value = "删除账户", notes = "")
+    @ResponseBody
+    @ApiImplicitParam(name = "id", value = "账户ID", required = true, paramType = "path")
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public APIResponse delete(@PathVariable Long id) {
+        accountService.delete(ULong.valueOf(id));
+        return APIResponse.success("success");
     }
 }

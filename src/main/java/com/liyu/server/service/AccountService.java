@@ -35,9 +35,17 @@ public interface AccountService {
 
     /**
      * 更新账户信息
-     * @param id 账户ID
+     *
+     * @param id         账户ID
      * @param updateData 账户数据
      * @return Account
      */
-    Account udate(ULong id, Account updateData);
+    Account update(ULong id, Account updateData);
+
+    /**
+     * 删除帐号
+     *
+     * @param id 账户ID
+     */
+    void delete(ULong id);
 }

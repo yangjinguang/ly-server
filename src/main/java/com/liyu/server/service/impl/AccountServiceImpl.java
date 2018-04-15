@@ -80,7 +80,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account udate(ULong id, Account updateData) {
+    public Account update(ULong id, Account updateData) {
         AccountRecord accountRecord = context.selectFrom(ACCOUNT).where(ACCOUNT.ID.eq(id)).fetchOne();
         if (!updateData.getUsername().isEmpty()) {
             accountRecord.setUsername(updateData.getUsername());
@@ -99,5 +99,10 @@ public class AccountServiceImpl implements AccountService {
         }
         accountRecord.update();
         return accountRecord.into(Account.class);
+    }
+
+    @Override
+    public void delete(ULong id) {
+        context.deleteFrom(ACCOUNT).where(ACCOUNT.ID.eq(id)).execute();
     }
 }
