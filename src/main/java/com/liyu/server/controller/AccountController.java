@@ -45,10 +45,10 @@ public class AccountController {
     @ApiOperation(value = "更新账户", notes = "")
     @ResponseBody
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "账户ID", required = true, paramType = "path"),
+            @ApiImplicitParam(name = "id", value = "账户ID", required = true, dataType = "Long", paramType = "path"),
             @ApiImplicitParam(name = "updateData", value = "账户信息", required = true, dataType = "Account", paramType = "body")
     })
-    @RequestMapping(value = "/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public APIResponse create(@PathVariable Long id,
                               @RequestBody Account updateData) {
         Account account = accountService.update(ULong.valueOf(id), updateData);
@@ -57,7 +57,7 @@ public class AccountController {
 
     @ApiOperation(value = "删除账户", notes = "")
     @ResponseBody
-    @ApiImplicitParam(name = "id", value = "账户ID", required = true, paramType = "path")
+    @ApiImplicitParam(name = "id", value = "账户ID", required = true, dataType = "Long", paramType = "path")
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public APIResponse delete(@PathVariable Long id) {
         accountService.delete(ULong.valueOf(id));
