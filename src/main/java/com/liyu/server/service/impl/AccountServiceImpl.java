@@ -1,12 +1,10 @@
 package com.liyu.server.service.impl;
 
-import com.google.common.primitives.UnsignedLong;
 import com.liyu.server.model.AccountCreateData;
 import com.liyu.server.service.AccountService;
 import com.liyu.server.tables.pojos.Account;
 import com.liyu.server.tables.records.AccountRecord;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.types.ULong;
 import org.springframework.stereotype.Service;
@@ -15,9 +13,7 @@ import org.springframework.util.DigestUtils;
 import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static com.liyu.server.tables.Account.ACCOUNT;
 
