@@ -216,6 +216,30 @@
                                     <name>BOOLEAN</name>
                                     <expression>.*.organization.is_class</expression>
                                 </forcedType>
+                                <forcedType>
+                                    <name>BOOLEAN</name>
+                                    <expression>.*.organization.is_root</expression>
+                                </forcedType>
+                                <forcedType>
+                                    <name>BOOLEAN</name>
+                                    <expression>.*.organization.enabled</expression>
+                                </forcedType>
+                                <forcedType>
+                                    <name>BOOLEAN</name>
+                                    <expression>.*.account.enabled</expression>
+                                </forcedType>
+                                <forcedType>
+                                    <name>BOOLEAN</name>
+                                    <expression>.*.student.enabled</expression>
+                                </forcedType>
+                                <forcedType>
+                                    <name>BOOLEAN</name>
+                                    <expression>.*.role.enabled</expression>
+                                </forcedType>
+                                <forcedType>
+                                    <name>BOOLEAN</name>
+                                    <expression>.*.tenant.enabled</expression>
+                                </forcedType>
                             </forcedTypes>
                         </database>
                         <target>

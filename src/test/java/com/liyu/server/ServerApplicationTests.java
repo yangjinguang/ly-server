@@ -1,15 +1,30 @@
 package com.liyu.server;
 
+import com.liyu.server.service.AccountService;
+import com.liyu.server.service.OrganizationService;
+import com.liyu.server.service.TenantService;
+import com.liyu.server.tables.pojos.Account;
+import com.liyu.server.tables.pojos.Organization;
+import com.liyu.server.tables.pojos.Tenant;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.DigestUtils;
 
+import javax.annotation.Resource;
+
 @Slf4j
 @RunWith(SpringRunner.class)
-//@SpringBootTest
+@SpringBootTest
 public class ServerApplicationTests {
+    @Resource
+    private TenantService tenantService;
+    @Resource
+    private AccountService accountService;
+    @Resource
+    private OrganizationService organizationService;
 
     @Test
     public void contextLoads() {
@@ -23,9 +38,39 @@ public class ServerApplicationTests {
     }
 
     @Test
-    public void obToJsonTest() {
-//        APIResponse aaaa = APIResponse.failed("aaaa");
-//        log.info(JSON.toJSONString(aaaa));
+    public void testDataInt() {
+        // 创建租户
+        Tenant newTenant = new Tenant();
+        newTenant.setName("test-tenant");
+        newTenant.setDescription("for test");
+        newTenant.setAddress("xx address");
+        Tenant tenant = tenantService.create(newTenant);
+
+        // 创建组织
+        Organization newOrganization = new Organization();
+        newOrganization.setTenantId(tenant.getTenantId());
+        newOrganization.setName("全公司");
+        newOrganization.setDescription("全公司");
+        newOrganization.setIsRoot(true);
+        newOrganization.setIsClass(false);
+        newOrganization.setParentId("ROOT");
+        Organization organization = organizationService.create(newOrganization);
+
+        // 创建帐号
+        Account newAccount = new Account();
+        newAccount.setUsername("root");
+        newAccount.setPassword("123456");
+        newAccount.setPhone("10000000000");
+        newAccount.setEmail("root@ly.com");
+        newAccount.setWxOpenId("");
+        newAccount.setRoleId("");
+        Account account = accountService.create(newAccount);
+
+        // 绑定帐号到租户
+        tenantService.bindAccount(tenant.getTenantId(), account.getAccountId());
+
+        // 绑定帐号到组织
+        organizationService.bindAccount(organization.getOrganizationId(), account.getAccountId());
     }
 
 }

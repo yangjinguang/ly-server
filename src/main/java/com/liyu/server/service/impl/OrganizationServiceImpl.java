@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 import static com.liyu.server.tables.Organization.ORGANIZATION;
+import static com.liyu.server.tables.OrganizationAccount.ORGANIZATION_ACCOUNT;
 
 @Slf4j
 @Service
@@ -38,7 +39,8 @@ public class OrganizationServiceImpl implements OrganizationService {
         return context.insertInto(ORGANIZATION).columns(
                 ORGANIZATION.ORGANIZATION_ID,
                 ORGANIZATION.NAME,
-                ORGANIZATION.ADDRESS,
+                ORGANIZATION.AVATAR,
+                ORGANIZATION.IS_ROOT,
                 ORGANIZATION.IS_CLASS,
                 ORGANIZATION.PARENT_ID,
                 ORGANIZATION.TENANT_ID,
@@ -47,7 +49,8 @@ public class OrganizationServiceImpl implements OrganizationService {
         ).values(
                 CommonUtils.UUIDGenerator(),
                 newOrganization.getName(),
-                newOrganization.getAddress(),
+                newOrganization.getAvatar(),
+                newOrganization.getIsRoot(),
                 newOrganization.getIsClass(),
                 newOrganization.getParentId(),
                 newOrganization.getTenantId(),
@@ -62,8 +65,11 @@ public class OrganizationServiceImpl implements OrganizationService {
         if (!newOrganization.getName().isEmpty()) {
             organizationRecord.setName(newOrganization.getName());
         }
-        if (!newOrganization.getAddress().isEmpty()) {
-            organizationRecord.setAddress(newOrganization.getAddress());
+        if (!newOrganization.getAvatar().isEmpty()) {
+            organizationRecord.setAvatar(newOrganization.getAvatar());
+        }
+        if (newOrganization.getIsRoot() != null) {
+            organizationRecord.setIsRoot(newOrganization.getIsRoot());
         }
         if (newOrganization.getIsClass() != null) {
             organizationRecord.setIsClass(newOrganization.getIsClass());
@@ -81,5 +87,16 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public void delete(ULong id) {
         context.deleteFrom(ORGANIZATION).where(ORGANIZATION.ID.eq(id)).execute();
+    }
+
+    @Override
+    public void bindAccount(String organizationId, String accountId) {
+        context.insertInto(ORGANIZATION_ACCOUNT).columns(
+                ORGANIZATION_ACCOUNT.ORGANIZATION_ID,
+                ORGANIZATION_ACCOUNT.ACCOUNT_ID
+        ).values(
+                organizationId,
+                accountId
+        ).execute();
     }
 }

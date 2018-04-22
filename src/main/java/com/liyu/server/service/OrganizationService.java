@@ -44,4 +44,12 @@ public interface OrganizationService {
      * @param id 组织ID
      */
     void delete(ULong id);
+
+    /**
+     * 绑定帐号到组织
+     *
+     * @param organizationId 组织ID
+     * @param accountId      帐号ID
+     */
+    void bindAccount(String organizationId, String accountId);
 }

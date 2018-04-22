@@ -36,11 +36,12 @@ public class TenantServiceImpl implements TenantService {
     @Override
     public Tenant create(Tenant newTenant) {
         Timestamp currentTime = new Timestamp(new Date().getTime());
-        return context.insertInto(TENANT).columns(
+        TenantRecord tenantRecord = context.insertInto(TENANT).columns(
                 TENANT.TENANT_ID,
                 TENANT.NAME,
                 TENANT.ADDRESS,
                 TENANT.DESCRIPTION,
+                TENANT.AVATAR,
                 TENANT.CREATED_AT,
                 TENANT.UPDATED_AT
         ).values(
@@ -48,9 +49,11 @@ public class TenantServiceImpl implements TenantService {
                 newTenant.getName(),
                 newTenant.getAddress(),
                 newTenant.getDescription(),
+                newTenant.getAvatar(),
                 currentTime,
                 currentTime
-        ).returning().fetchOne().into(Tenant.class);
+        ).returning().fetchOne();
+        return tenantRecord.into(Tenant.class);
     }
 
     @Override
@@ -64,6 +67,9 @@ public class TenantServiceImpl implements TenantService {
         }
         if (!newTenant.getDescription().isEmpty()) {
             tenantRecord.setDescription(newTenant.getDescription());
+        }
+        if (!newTenant.getAvatar().isEmpty()) {
+            tenantRecord.setAvatar(newTenant.getAvatar());
         }
         tenantRecord.update();
         return tenantRecord.into(Tenant.class);

@@ -1,8 +1,10 @@
 package com.liyu.server.controller;
 
 import com.liyu.server.service.AccountService;
+import com.liyu.server.service.OrganizationService;
 import com.liyu.server.service.TenantService;
 import com.liyu.server.tables.pojos.Account;
+import com.liyu.server.tables.pojos.Organization;
 import com.liyu.server.tables.pojos.Tenant;
 import com.liyu.server.utils.APIResponse;
 import io.swagger.annotations.Api;
@@ -27,6 +29,8 @@ public class TenantController {
     private TenantService tenantService;
     @Resource
     private AccountService accountService;
+    @Resource
+    private OrganizationService organizationService;
 
     @ApiOperation(value = "获取租户列表", notes = "")
     @ApiImplicitParams({
@@ -45,6 +49,13 @@ public class TenantController {
     @RequestMapping(value = "", method = RequestMethod.POST)
     public APIResponse create(@RequestBody Tenant newTenant) {
         Tenant tenant = tenantService.create(newTenant);
+        Organization newOrganization = new Organization();
+        newOrganization.setTenantId(tenant.getTenantId());
+        newOrganization.setName("全公司");
+        newOrganization.setDescription("全公司");
+        newOrganization.setIsRoot(true);
+        newOrganization.setIsClass(false);
+        organizationService.create(newOrganization);
         return APIResponse.success(tenant);
     }
 

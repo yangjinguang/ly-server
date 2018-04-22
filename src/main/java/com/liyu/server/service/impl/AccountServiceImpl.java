@@ -4,7 +4,6 @@ import com.liyu.server.service.AccountService;
 import com.liyu.server.tables.pojos.Account;
 import com.liyu.server.tables.records.AccountRecord;
 import com.liyu.server.utils.CommonUtils;
-import com.sun.corba.se.spi.ior.ObjectId;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jooq.DSLContext;
 import org.jooq.types.ULong;
