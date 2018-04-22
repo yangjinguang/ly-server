@@ -1,5 +1,6 @@
 package com.liyu.server.controller;
 
+import com.liyu.server.model.OrganizationTree;
 import com.liyu.server.service.AccountService;
 import com.liyu.server.service.OrganizationService;
 import com.liyu.server.tables.pojos.Organization;
@@ -37,6 +38,13 @@ public class OrganizationController {
         log.info("tenantId: " + tenantId);
         List<Organization> organizations = organizationService.listByTenantId(tenantId);
         return APIResponse.success(organizations);
+    }
+
+    @ApiOperation(value = "获取组织树", notes = "")
+    @RequestMapping(value = "/tree", method = RequestMethod.GET)
+    public APIResponse list(@RequestHeader(value = "X-TENANT-ID") String tenantId) {
+        OrganizationTree organizationTree = organizationService.tree(tenantId);
+        return APIResponse.success(organizationTree);
     }
 
     @ApiOperation(value = "创建组织", notes = "")

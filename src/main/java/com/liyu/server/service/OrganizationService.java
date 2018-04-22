@@ -1,5 +1,6 @@
 package com.liyu.server.service;
 
+import com.liyu.server.model.OrganizationTree;
 import com.liyu.server.tables.pojos.Organization;
 import org.jooq.types.ULong;
 
@@ -20,6 +21,14 @@ public interface OrganizationService {
      * @return List<Organization>
      */
     List<Organization> listByTenantId(String tenantId);
+
+    /**
+     * 获取组织树
+     *
+     * @param tenantId 租户ID
+     * @return
+     */
+    OrganizationTree tree(String tenantId);
 
     /**
      * 创建新组织

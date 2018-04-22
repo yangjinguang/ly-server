@@ -1,5 +1,6 @@
 package com.liyu.server.service.impl;
 
+import com.liyu.server.model.OrganizationTree;
 import com.liyu.server.service.OrganizationService;
 import com.liyu.server.tables.pojos.Organization;
 import com.liyu.server.tables.records.OrganizationRecord;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -31,6 +33,39 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public List<Organization> listByTenantId(String tenantId) {
         return context.selectFrom(ORGANIZATION).where(ORGANIZATION.TENANT_ID.eq(tenantId)).fetch().into(Organization.class);
+    }
+
+    private void orgTreeChild(OrganizationTree organizationTree, List<Organization> organizations) {
+        if (organizationTree == null) {
+            return;
+        }
+        ArrayList<OrganizationTree> children = new ArrayList<>();
+        for (Organization organization : organizations) {
+            if (organization.getParentId().equals(organizationTree.getOrganizationId())) {
+                children.add(new OrganizationTree(organization));
+            }
+        }
+        if (children.size() > 0) {
+            organizationTree.setChildren(children);
+            for (OrganizationTree tree : organizationTree.getChildren()) {
+                this.orgTreeChild(tree, organizations);
+            }
+        }
+    }
+
+    @Override
+    public OrganizationTree tree(String tenantId) {
+
+        OrganizationTree organizationTree = null;
+        List<Organization> organizations = context.selectFrom(ORGANIZATION).where(ORGANIZATION.TENANT_ID.eq(tenantId)).fetch().into(Organization.class);
+        for (Organization organization : organizations) {
+            if (organization.getIsRoot() != null && organization.getIsRoot()) {
+                log.info("organization name: " + organization.getName());
+                organizationTree = new OrganizationTree(organization);
+            }
+        }
+        this.orgTreeChild(organizationTree, organizations);
+        return organizationTree;
     }
 
     @Override
