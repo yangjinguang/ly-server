@@ -1,6 +1,8 @@
 package com.liyu.server.controller;
 
+import com.liyu.server.service.AccountService;
 import com.liyu.server.service.OrganizationService;
+import com.liyu.server.tables.pojos.Account;
 import com.liyu.server.tables.pojos.Organization;
 import com.liyu.server.utils.APIResponse;
 import io.swagger.annotations.Api;
@@ -12,15 +14,19 @@ import org.jooq.types.ULong;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 import java.util.List;
 
 @Slf4j
 @Api(value = "组织", description = "组织操作", tags = {"组织接口"})
 @RestController
-@RequestMapping(value = "/api/organization")
+@RequestMapping(value = "/api/organizations")
 public class OrganizationController {
     @Resource
     private OrganizationService organizationService;
+    @Resource
+    private AccountService accountService;
 
     @ApiOperation(value = "获取组织列表", notes = "")
     @ApiImplicitParams({
@@ -37,7 +43,10 @@ public class OrganizationController {
     @ApiOperation(value = "创建组织", notes = "")
     @ApiImplicitParam(name = "newOrganization", value = "组织详情", required = true, dataType = "Organization", paramType = "body")
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public APIResponse create(@RequestBody Organization newOrganization) {
+    public APIResponse create(HttpServletRequest request, @RequestBody Organization newOrganization) {
+        Principal principal = request.getUserPrincipal();
+        Account curUser = accountService.getByUsername(principal.getName());
+        newOrganization.setTenantId(request.getHeader("X_TENANT_ID"));
         Organization organization = organizationService.create(newOrganization);
         return APIResponse.success(organization);
     }

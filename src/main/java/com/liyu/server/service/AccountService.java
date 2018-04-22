@@ -1,6 +1,5 @@
 package com.liyu.server.service;
 
-import com.liyu.server.model.AccountCreateData;
 import com.liyu.server.tables.pojos.Account;
 import org.jooq.types.ULong;
 
@@ -26,12 +25,20 @@ public interface AccountService {
     Account getByUsernameAndPassword(String username, String password);
 
     /**
-     * 创建新账户
+     * 根据username获取用户
      *
-     * @param createData 接收前端数据
+     * @param username username
      * @return Account
      */
-    Account create(AccountCreateData createData);
+    Account getByUsername(String username);
+
+    /**
+     * 创建新账户
+     *
+     * @param newAccount 账户详情
+     * @return Account
+     */
+    Account create(Account newAccount);
 
     /**
      * 更新账户信息

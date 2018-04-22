@@ -7,7 +7,7 @@ spring:
     host: 127.0.0.1
     port: 3306
     schema: ly-server
-    url: jdbc:mysql://${spring.datasource.host}:${spring.datasource.port}/${spring.datasource.schema}?useSSL=false
+    url: jdbc:mysql://${spring.datasource.host}:${spring.datasource.port}/${spring.datasource.schema}?useSSL=false&characterEncoding=utf-8
     username: root
     password:
     initialize: false

@@ -3,6 +3,7 @@ package com.liyu.server.service.impl;
 import com.liyu.server.service.TenantService;
 import com.liyu.server.tables.pojos.Tenant;
 import com.liyu.server.tables.records.TenantRecord;
+import com.liyu.server.utils.CommonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
 import org.jooq.types.ULong;
@@ -30,12 +31,14 @@ public class TenantServiceImpl implements TenantService {
     public Tenant create(Tenant newTenant) {
         Timestamp currentTime = new Timestamp(new Date().getTime());
         return context.insertInto(TENANT).columns(
+                TENANT.TENANT_ID,
                 TENANT.NAME,
                 TENANT.ADDRESS,
                 TENANT.DESCRIPTION,
                 TENANT.CREATED_AT,
                 TENANT.UPDATED_AT
         ).values(
+                CommonUtils.UUIDGenerator(),
                 newTenant.getName(),
                 newTenant.getAddress(),
                 newTenant.getDescription(),

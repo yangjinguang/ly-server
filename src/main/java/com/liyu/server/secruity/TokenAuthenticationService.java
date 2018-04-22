@@ -72,12 +72,12 @@ public class TokenAuthenticationService {
 
                 // 得到 权限（角色）
                 List<GrantedAuthority> authorities = AuthorityUtils.commaSeparatedStringToAuthorityList((String) claims.get("authorities"));
-                log.info(authorities.toString());
                 // 返回验证令牌
                 return user != null ?
                         new UsernamePasswordAuthenticationToken(user, null, authorities) :
                         null;
             } catch (Exception e) {
+                log.error(e.getMessage());
                 return null;
             }
         }

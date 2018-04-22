@@ -1,5 +1,6 @@
 package com.liyu.server.utils;
 
+import com.alibaba.fastjson.JSON;
 import com.liyu.server.enums.APIResponseStatusEnum;
 
 public class APIResponse {
@@ -43,10 +44,14 @@ public class APIResponse {
     }
 
     public static APIResponse success(Object data) {
-//        HashMap<String, Object> map = new HashMap<>();
-//        map.put("status", "success");
-//        map.put("data", data);
-//        return map;
         return new APIResponse(APIResponseStatusEnum.SUCCESS, data);
+    }
+
+    public static APIResponse failed(Object data) {
+        return new APIResponse(APIResponseStatusEnum.FAILED, data);
+    }
+
+    public String toJSON() {
+        return JSON.toJSONString(this);
     }
 }

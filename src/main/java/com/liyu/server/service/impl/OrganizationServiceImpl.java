@@ -3,6 +3,7 @@ package com.liyu.server.service.impl;
 import com.liyu.server.service.OrganizationService;
 import com.liyu.server.tables.pojos.Organization;
 import com.liyu.server.tables.records.OrganizationRecord;
+import com.liyu.server.utils.CommonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
 import org.jooq.types.ULong;
@@ -30,6 +31,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     public Organization create(Organization newOrganization) {
         Timestamp currentTime = new Timestamp(new Date().getTime());
         return context.insertInto(ORGANIZATION).columns(
+                ORGANIZATION.ORGANIZATION_ID,
                 ORGANIZATION.NAME,
                 ORGANIZATION.ADDRESS,
                 ORGANIZATION.IS_CLASS,
@@ -38,6 +40,7 @@ public class OrganizationServiceImpl implements OrganizationService {
                 ORGANIZATION.CREATED_AT,
                 ORGANIZATION.UPDATED_AT
         ).values(
+                CommonUtils.UUIDGenerator(),
                 newOrganization.getName(),
                 newOrganization.getAddress(),
                 newOrganization.getIsClass(),

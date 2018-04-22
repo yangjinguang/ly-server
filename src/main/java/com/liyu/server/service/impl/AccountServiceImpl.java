@@ -1,9 +1,10 @@
 package com.liyu.server.service.impl;
 
-import com.liyu.server.model.AccountCreateData;
 import com.liyu.server.service.AccountService;
 import com.liyu.server.tables.pojos.Account;
 import com.liyu.server.tables.records.AccountRecord;
+import com.liyu.server.utils.CommonUtils;
+import com.sun.corba.se.spi.ior.ObjectId;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jooq.DSLContext;
 import org.jooq.types.ULong;
@@ -45,31 +46,38 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account create(AccountCreateData createData) {
+    public Account getByUsername(String username) {
+        return context.selectFrom(ACCOUNT).where(ACCOUNT.USERNAME.equal(username)).fetchOne().into(Account.class);
+    }
+
+    @Override
+    public Account create(Account newAccount) {
         Timestamp currentTime = new Timestamp(new Date().getTime());
         String salt = RandomStringUtils.random(5, true, true);
-        String pass = createData.getPassword() + salt;
+        String pass = newAccount.getPassword() + salt;
         String md5Pass = DigestUtils.md5DigestAsHex(pass.getBytes());
         return context.insertInto(ACCOUNT).columns(
+                ACCOUNT.ACCOUNT_ID,
                 ACCOUNT.USERNAME,
                 ACCOUNT.PASSWORD,
                 ACCOUNT.SALT,
                 ACCOUNT.PHONE,
                 ACCOUNT.EMAIL,
-                ACCOUNT.TENANT_ID,
-                ACCOUNT.ORGANIZATION_ID,
+                ACCOUNT.WX_OPEN_ID,
+                ACCOUNT.AVATAR,
                 ACCOUNT.ROLE_ID,
                 ACCOUNT.CREATED_AT,
                 ACCOUNT.UPDATED_AT
         ).values(
-                createData.getUsername(),
+                CommonUtils.UUIDGenerator(),
+                newAccount.getUsername(),
                 md5Pass,
                 salt,
-                createData.getPhone(),
-                createData.getEmail(),
-                ULong.valueOf(createData.getTenantId()),
-                ULong.valueOf(createData.getOrganizationId()),
-                ULong.valueOf(0),
+                newAccount.getPhone(),
+                newAccount.getEmail(),
+                newAccount.getWxOpenId(),
+                newAccount.getAvatar(),
+                newAccount.getRoleId(),
                 currentTime,
                 currentTime
         ).returning().fetchOne().into(Account.class);
@@ -83,12 +91,6 @@ public class AccountServiceImpl implements AccountService {
         }
         if (!updateData.getEmail().isEmpty()) {
             accountRecord.setEmail(updateData.getEmail());
-        }
-        if (updateData.getOrganizationId() != null) {
-            accountRecord.setOrganizationId(updateData.getOrganizationId());
-        }
-        if (updateData.getTenantId() != null) {
-            accountRecord.setTenantId(updateData.getTenantId());
         }
         if (updateData.getRoleId() != null) {
             accountRecord.setRoleId(updateData.getRoleId());

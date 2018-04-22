@@ -30,7 +30,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         // 获取认证的用户名 & 密码
         String name = authentication.getName();
         String password = authentication.getCredentials().toString();
-        log.info(name);
         // 认证逻辑
         Account account = accountService.getByUsernameAndPassword(name, password);
         if (account != null) {

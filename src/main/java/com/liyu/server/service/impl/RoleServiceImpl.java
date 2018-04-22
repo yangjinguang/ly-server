@@ -6,6 +6,7 @@ import com.liyu.server.tables.pojos.Role;
 import static com.liyu.server.tables.Role.ROLE;
 
 import com.liyu.server.tables.records.RoleRecord;
+import com.liyu.server.utils.CommonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
 import org.jooq.types.ULong;
@@ -31,11 +32,13 @@ public class RoleServiceImpl implements RoleService {
     public Role create(Role newRole) {
         Timestamp currentTime = new Timestamp(new Date().getTime());
         return context.insertInto(ROLE).columns(
+                ROLE.ROLE_ID,
                 ROLE.NAME,
                 ROLE.TENANT_ID,
                 ROLE.CREATED_AT,
                 ROLE.UPDATED_AT
         ).values(
+                CommonUtils.UUIDGenerator(),
                 newRole.getName(),
                 newRole.getTenantId(),
                 currentTime,
