@@ -34,9 +34,11 @@ public class OrganizationController {
             @ApiImplicitParam(name = "size", value = "每页条数", required = false, dataType = "int", paramType = "query")
     })
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public APIResponse list(@RequestParam(value = "page", required = false) Integer page,
+    public APIResponse list(HttpServletRequest request,
+                            @RequestParam(value = "page", required = false) Integer page,
                             @RequestParam(value = "size", required = false) Integer size) {
-        List<Organization> organizations = organizationService.list();
+        String tenantId = request.getHeader("X_TENANT_ID");
+        List<Organization> organizations = organizationService.listByTenantId(tenantId);
         return APIResponse.success(organizations);
     }
 
@@ -44,8 +46,6 @@ public class OrganizationController {
     @ApiImplicitParam(name = "newOrganization", value = "组织详情", required = true, dataType = "Organization", paramType = "body")
     @RequestMapping(value = "", method = RequestMethod.POST)
     public APIResponse create(HttpServletRequest request, @RequestBody Organization newOrganization) {
-        Principal principal = request.getUserPrincipal();
-        Account curUser = accountService.getByUsername(principal.getName());
         newOrganization.setTenantId(request.getHeader("X_TENANT_ID"));
         Organization organization = organizationService.create(newOrganization);
         return APIResponse.success(organization);

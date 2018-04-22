@@ -14,6 +14,14 @@ public interface OrganizationService {
     List<Organization> list();
 
     /**
+     * 根据租户ID获取组织列表
+     *
+     * @param tenantId 租户ID
+     * @return List<Organization>
+     */
+    List<Organization> listByTenantId(String tenantId);
+
+    /**
      * 创建新组织
      *
      * @param newOrganization 组织信息

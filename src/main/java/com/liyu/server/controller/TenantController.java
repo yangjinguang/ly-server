@@ -1,6 +1,8 @@
 package com.liyu.server.controller;
 
+import com.liyu.server.service.AccountService;
 import com.liyu.server.service.TenantService;
+import com.liyu.server.tables.pojos.Account;
 import com.liyu.server.tables.pojos.Tenant;
 import com.liyu.server.utils.APIResponse;
 import io.swagger.annotations.Api;
@@ -12,15 +14,19 @@ import org.jooq.types.ULong;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 import java.util.List;
 
 @Slf4j
 @Api(value = "租户", description = "租户操作", tags = {"租户接口"})
 @RestController
-@RequestMapping(value = "/api/tenant")
+@RequestMapping(value = "/api/tenants")
 public class TenantController {
     @Resource
     private TenantService tenantService;
+    @Resource
+    private AccountService accountService;
 
     @ApiOperation(value = "获取租户列表", notes = "")
     @ApiImplicitParams({
@@ -61,5 +67,14 @@ public class TenantController {
     public APIResponse delete(@PathVariable Long id) {
         tenantService.delete(ULong.valueOf(id));
         return APIResponse.success("success");
+    }
+
+    @ApiOperation(value = "获取当前用户的租户列表", notes = "")
+    @ResponseBody
+    @RequestMapping(value = "/current", method = RequestMethod.GET)
+    public APIResponse tenants(HttpServletRequest request) {
+        Principal principal = request.getUserPrincipal();
+        List<Tenant> tenants = tenantService.byAccountUsername(principal.getName());
+        return APIResponse.success(tenants);
     }
 }

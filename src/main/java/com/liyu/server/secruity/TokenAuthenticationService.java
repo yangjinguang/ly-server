@@ -49,7 +49,7 @@ public class TokenAuthenticationService {
             jwtMap.put("username", username);
             APIResponse res = APIResponse.success(jwtMap);
             log.info("res:");
-            response.getWriter().write(JSON.toJSONString(res));
+            response.getWriter().write(res.toJSON());
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -36,4 +36,22 @@ public interface TenantService {
      * @param id 租户ID
      */
     void delete(ULong id);
+
+    /**
+     * 根据用户ID获取租户列表
+     *
+     * @param accountId 帐号ID
+     * @return
+     */
+    List<Tenant> byAccountId(String accountId);
+
+    /**
+     * 绑定帐号
+     *
+     * @param tenantId  租户ID
+     * @param accountId 帐号ID
+     */
+    void bindAccount(String tenantId, String accountId);
+
+    List<Tenant> byAccountUsername(String username);
 }

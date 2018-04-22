@@ -28,6 +28,11 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
+    public List<Organization> listByTenantId(String tenantId) {
+        return context.selectFrom(ORGANIZATION).where(ORGANIZATION.TENANT_ID.eq(tenantId)).fetch().into(Organization.class);
+    }
+
+    @Override
     public Organization create(Organization newOrganization) {
         Timestamp currentTime = new Timestamp(new Date().getTime());
         return context.insertInto(ORGANIZATION).columns(

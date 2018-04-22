@@ -1,8 +1,5 @@
 package com.liyu.server;
 
-import com.alibaba.fastjson.JSON;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.liyu.server.utils.APIResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,8 +24,8 @@ public class ServerApplicationTests {
 
     @Test
     public void obToJsonTest() {
-        APIResponse aaaa = APIResponse.failed("aaaa");
-        log.info(JSON.toJSONString(aaaa));
+//        APIResponse aaaa = APIResponse.failed("aaaa");
+//        log.info(JSON.toJSONString(aaaa));
     }
 
 }

@@ -72,12 +72,10 @@ public class AccountController {
     @RequestMapping(value = "/profile", method = RequestMethod.GET)
     public APIResponse profile(HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
-        log.info("11111");
         log.info(principal.getName());
         Account account = accountService.getByUsername(principal.getName());
         account.setPassword(null);
         account.setSalt(null);
         return APIResponse.success(account);
     }
-
 }
