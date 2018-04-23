@@ -3,6 +3,7 @@ package com.liyu.server.controller;
 import com.liyu.server.model.OrganizationTree;
 import com.liyu.server.service.AccountService;
 import com.liyu.server.service.OrganizationService;
+import com.liyu.server.tables.pojos.Account;
 import com.liyu.server.tables.pojos.Organization;
 import com.liyu.server.utils.APIResponse;
 import io.swagger.annotations.Api;
@@ -108,5 +109,21 @@ public class OrganizationController {
             organizationService.unbindAccount(organization.getOrganizationId(), accountId);
         }
         return APIResponse.success("success");
+    }
+
+    @ApiOperation(value = "组织绑定的账户列表", notes = "")
+    @ResponseBody
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "id", required = true, dataType = "Long", paramType = "path"),
+            @ApiImplicitParam(name = "page", value = "页码", required = false, dataType = "int", paramType = "query"),
+            @ApiImplicitParam(name = "size", value = "每页条数", required = false, dataType = "int", paramType = "query")
+    })
+    @RequestMapping(value = "/{id}/accounts", method = RequestMethod.GET)
+    public APIResponse list(@PathVariable(value = "id", required = true) Long id,
+                            @RequestParam(value = "page", required = false) Integer page,
+                            @RequestParam(value = "size", required = false) Integer size) {
+        Organization organization = organizationService.byId(ULong.valueOf(id));
+        List<Account> accounts = organizationService.accounts(organization.getOrganizationId());
+        return APIResponse.success(accounts);
     }
 }

@@ -1,6 +1,7 @@
 package com.liyu.server.service;
 
 import com.liyu.server.model.OrganizationTree;
+import com.liyu.server.tables.pojos.Account;
 import com.liyu.server.tables.pojos.Organization;
 import org.jooq.types.ULong;
 
@@ -74,8 +75,16 @@ public interface OrganizationService {
     /**
      * 取消帐号绑定
      *
-     * @param organizationId
-     * @param accountId
+     * @param organizationId 组织ID
+     * @param accountId      帐号ID
      */
     void unbindAccount(String organizationId, String accountId);
+
+    /**
+     * 根据组织ID获取账户列表
+     *
+     * @param organizationId 组织ID
+     * @return List<Account>
+     */
+    List<Account> accounts(String organizationId);
 }

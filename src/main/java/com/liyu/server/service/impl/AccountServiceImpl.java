@@ -102,4 +102,5 @@ public class AccountServiceImpl implements AccountService {
     public void delete(ULong id) {
         context.deleteFrom(ACCOUNT).where(ACCOUNT.ID.eq(id)).execute();
     }
+
 }

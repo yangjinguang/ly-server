@@ -2,13 +2,12 @@ package com.liyu.server.service.impl;
 
 import com.liyu.server.model.OrganizationTree;
 import com.liyu.server.service.OrganizationService;
+import com.liyu.server.tables.pojos.Account;
 import com.liyu.server.tables.pojos.Organization;
-import com.liyu.server.tables.records.OrganizationAccountRecord;
 import com.liyu.server.tables.records.OrganizationRecord;
 import com.liyu.server.utils.CommonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
-import org.jooq.Result;
 import org.jooq.exception.NoDataFoundException;
 import org.jooq.types.ULong;
 import org.springframework.stereotype.Service;
@@ -19,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.liyu.server.tables.Account.ACCOUNT;
 import static com.liyu.server.tables.Organization.ORGANIZATION;
 import static com.liyu.server.tables.OrganizationAccount.ORGANIZATION_ACCOUNT;
 
@@ -151,5 +151,15 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public void unbindAccount(String organizationId, String accountId) {
         context.deleteFrom(ORGANIZATION_ACCOUNT).where(ORGANIZATION_ACCOUNT.ORGANIZATION_ID.eq(organizationId), ORGANIZATION_ACCOUNT.ACCOUNT_ID.eq(accountId)).execute();
+    }
+
+    @Override
+    public List<Account> accounts(String organizationId) {
+        return context.select(ACCOUNT.fields()).from(ORGANIZATION_ACCOUNT)
+                .leftJoin(ACCOUNT)
+                .on(ACCOUNT.ACCOUNT_ID.eq(ORGANIZATION_ACCOUNT.ACCOUNT_ID))
+                .where(ORGANIZATION_ACCOUNT.ORGANIZATION_ID.eq(organizationId))
+                .fetch()
+                .into(Account.class);
     }
 }

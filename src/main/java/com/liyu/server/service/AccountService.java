@@ -55,4 +55,5 @@ public interface AccountService {
      * @param id 账户ID
      */
     void delete(ULong id);
+
 }
