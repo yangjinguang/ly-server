@@ -147,4 +147,9 @@ public class OrganizationServiceImpl implements OrganizationService {
             ).execute();
         }
     }
+
+    @Override
+    public void unbindAccount(String organizationId, String accountId) {
+        context.deleteFrom(ORGANIZATION_ACCOUNT).where(ORGANIZATION_ACCOUNT.ORGANIZATION_ID.eq(organizationId), ORGANIZATION_ACCOUNT.ACCOUNT_ID.eq(accountId)).execute();
+    }
 }

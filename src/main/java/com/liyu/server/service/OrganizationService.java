@@ -70,4 +70,12 @@ public interface OrganizationService {
      * @param accountId      帐号ID
      */
     void bindAccount(String organizationId, String accountId);
+
+    /**
+     * 取消帐号绑定
+     *
+     * @param organizationId
+     * @param accountId
+     */
+    void unbindAccount(String organizationId, String accountId);
 }

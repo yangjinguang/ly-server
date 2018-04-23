@@ -88,8 +88,24 @@ public class OrganizationController {
                                     @RequestBody List<String> accountIds) {
         Organization organization = organizationService.byId(ULong.valueOf(id));
         for (String accountId : accountIds) {
-            log.info("accountId: " + accountId);
+            log.info("bind accountId: " + accountId);
             organizationService.bindAccount(organization.getOrganizationId(), accountId);
+        }
+        return APIResponse.success("success");
+    }
+
+    @ApiOperation(value = "取消绑定账户", notes = "")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "ID", required = true, dataType = "Long", paramType = "path"),
+            @ApiImplicitParam(name = "accountIds", value = "用户ID列表", required = true, dataType = "List<String>", paramType = "body"),
+    })
+    @RequestMapping(value = "/{id}/unbindAccounts", method = RequestMethod.PUT)
+    public APIResponse unbindAccounts(@PathVariable Long id,
+                                      @RequestBody List<String> accountIds) {
+        Organization organization = organizationService.byId(ULong.valueOf(id));
+        for (String accountId : accountIds) {
+            log.info("unbind accountId: " + accountId);
+            organizationService.unbindAccount(organization.getOrganizationId(), accountId);
         }
         return APIResponse.success("success");
     }
