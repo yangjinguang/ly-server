@@ -7,6 +7,15 @@ import org.jooq.types.ULong;
 import java.util.List;
 
 public interface OrganizationService {
+
+    /**
+     * 根据ID获取组织详情
+     *
+     * @param id ID
+     * @return Organization
+     */
+    Organization byId(ULong id);
+
     /**
      * 获取组织列表
      *

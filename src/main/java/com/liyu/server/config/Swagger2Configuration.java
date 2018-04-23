@@ -23,9 +23,12 @@ public class Swagger2Configuration {
     @Bean
     public Docket createRestApi() {
         ParameterBuilder tokenPar = new ParameterBuilder();
+        ParameterBuilder tenantIdPar = new ParameterBuilder();
         List<Parameter> pars = new ArrayList<Parameter>();
         tokenPar.name("Authorization").description("Access Token").modelRef(new ModelRef("string")).parameterType("header").required(true).build();
+        tenantIdPar.name("X-TENANT-ID").description("租户ID").modelRef(new ModelRef("string")).parameterType("header").required(true).build();
         pars.add(tokenPar.build());
+        pars.add(tenantIdPar.build());
         return new Docket(DocumentationType.SWAGGER_2)
                 .globalOperationParameters(pars)
                 .genericModelSubstitutes(ResponseEntity.class)

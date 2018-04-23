@@ -57,9 +57,10 @@ public class OrganizationController {
         return APIResponse.success(organization);
     }
 
+
     @ApiOperation(value = "更新组织", notes = "")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "组织ID", required = true, dataType = "Long", paramType = "path"),
+            @ApiImplicitParam(name = "id", value = "ID", required = true, dataType = "Long", paramType = "path"),
             @ApiImplicitParam(name = "newOrganization", value = "组织详情", required = true, dataType = "Organization", paramType = "body")
     })
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
@@ -70,11 +71,26 @@ public class OrganizationController {
     }
 
     @ApiOperation(value = "删除组织", notes = "")
-    @ResponseBody
-    @ApiImplicitParam(name = "id", value = "组织", required = true, dataType = "Long", paramType = "path")
+    @ApiImplicitParam(name = "id", value = "ID", required = true, dataType = "Long", paramType = "path")
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public APIResponse delete(@PathVariable Long id) {
         organizationService.delete(ULong.valueOf(id));
+        return APIResponse.success("success");
+    }
+
+    @ApiOperation(value = "绑定账户", notes = "")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "ID", required = true, dataType = "Long", paramType = "path"),
+            @ApiImplicitParam(name = "accountIds", value = "用户ID列表", required = true, dataType = "List<String>", paramType = "body"),
+    })
+    @RequestMapping(value = "/{id}/bindAccounts", method = RequestMethod.PUT)
+    public APIResponse bindAccounts(@PathVariable Long id,
+                                    @RequestBody List<String> accountIds) {
+        Organization organization = organizationService.byId(ULong.valueOf(id));
+        for (String accountId : accountIds) {
+            log.info("accountId: " + accountId);
+            organizationService.bindAccount(organization.getOrganizationId(), accountId);
+        }
         return APIResponse.success("success");
     }
 }

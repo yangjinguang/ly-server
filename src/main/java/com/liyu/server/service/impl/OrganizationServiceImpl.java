@@ -3,10 +3,13 @@ package com.liyu.server.service.impl;
 import com.liyu.server.model.OrganizationTree;
 import com.liyu.server.service.OrganizationService;
 import com.liyu.server.tables.pojos.Organization;
+import com.liyu.server.tables.records.OrganizationAccountRecord;
 import com.liyu.server.tables.records.OrganizationRecord;
 import com.liyu.server.utils.CommonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
+import org.jooq.Result;
+import org.jooq.exception.NoDataFoundException;
 import org.jooq.types.ULong;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +27,13 @@ import static com.liyu.server.tables.OrganizationAccount.ORGANIZATION_ACCOUNT;
 public class OrganizationServiceImpl implements OrganizationService {
     @Resource
     private DSLContext context;
+
+    @Override
+    public Organization byId(ULong id) {
+        return context.selectFrom(ORGANIZATION).where(ORGANIZATION.ID.eq(id)).fetchOptional()
+                .orElseThrow(() -> new NoDataFoundException("organization not found"))
+                .into(Organization.class);
+    }
 
     @Override
     public List<Organization> list() {
@@ -96,7 +106,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Override
     public Organization update(ULong id, Organization newOrganization) {
-        OrganizationRecord organizationRecord = context.selectFrom(ORGANIZATION).where(ORGANIZATION.ID.eq(id)).fetchOne();
+        OrganizationRecord organizationRecord = context.selectFrom(ORGANIZATION).where(ORGANIZATION.ID.eq(id)).fetchOptional().orElseThrow(() -> new NoDataFoundException("organization not found"));
         if (!newOrganization.getName().isEmpty()) {
             organizationRecord.setName(newOrganization.getName());
         }
@@ -126,12 +136,15 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Override
     public void bindAccount(String organizationId, String accountId) {
-        context.insertInto(ORGANIZATION_ACCOUNT).columns(
-                ORGANIZATION_ACCOUNT.ORGANIZATION_ID,
-                ORGANIZATION_ACCOUNT.ACCOUNT_ID
-        ).values(
-                organizationId,
-                accountId
-        ).execute();
+        Integer count = context.selectCount().from(ORGANIZATION_ACCOUNT).where(ORGANIZATION_ACCOUNT.ORGANIZATION_ID.eq(organizationId), ORGANIZATION_ACCOUNT.ACCOUNT_ID.eq(accountId)).fetchOne().into(int.class);
+        if (count <= 0) {
+            context.insertInto(ORGANIZATION_ACCOUNT).columns(
+                    ORGANIZATION_ACCOUNT.ORGANIZATION_ID,
+                    ORGANIZATION_ACCOUNT.ACCOUNT_ID
+            ).values(
+                    organizationId,
+                    accountId
+            ).execute();
+        }
     }
 }
