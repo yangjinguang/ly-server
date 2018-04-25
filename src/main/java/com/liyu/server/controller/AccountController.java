@@ -1,8 +1,10 @@
 package com.liyu.server.controller;
 
 import com.liyu.server.model.AccountCreateBody;
+import com.liyu.server.model.AccountDetail;
 import com.liyu.server.service.AccountService;
 import com.liyu.server.tables.pojos.Account;
+import com.liyu.server.tables.pojos.Organization;
 import com.liyu.server.utils.APIResponse;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
@@ -82,5 +84,19 @@ public class AccountController {
         account.setPassword(null);
         account.setSalt(null);
         return APIResponse.success(account);
+    }
+
+    @ApiOperation(value = "获取账户详情", notes = "")
+    @ResponseBody
+    @ApiImplicitParam(name = "id", value = "账户ID", required = true, dataType = "Long", paramType = "path")
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public APIResponse detail(@PathVariable Long id) {
+        Account account = accountService.getById(ULong.valueOf(id));
+        account.setPassword(null);
+        account.setSalt(null);
+        AccountDetail accountDetail = new AccountDetail(account);
+        List<Organization> organizations = accountService.organizations(account.getAccountId());
+        accountDetail.setOrganizations(organizations);
+        return APIResponse.success(accountDetail);
     }
 }

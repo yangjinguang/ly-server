@@ -1,6 +1,7 @@
 package com.liyu.server.service;
 
 import com.liyu.server.tables.pojos.Account;
+import com.liyu.server.tables.pojos.Organization;
 import org.jooq.types.ULong;
 
 import java.util.List;
@@ -31,6 +32,14 @@ public interface AccountService {
      * @return Account
      */
     Account getByUsername(String username);
+
+    /**
+     * 根据id获取账户
+     *
+     * @param id id
+     * @return Account
+     */
+    Account getById(ULong id);
 
     /**
      * 创建新账户
@@ -71,4 +80,12 @@ public interface AccountService {
      * @param organizationIds 组织ID列表
      */
     void bindOrganizations(String accountId, List<String> organizationIds);
+
+    /**
+     * 获取用户关联的组织列表
+     *
+     * @param accountId 账户ID
+     * @return List<Organization>
+     */
+    List<Organization> organizations(String accountId);
 }

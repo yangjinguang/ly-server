@@ -2,6 +2,7 @@ package com.liyu.server.service.impl;
 
 import com.liyu.server.service.AccountService;
 import com.liyu.server.tables.pojos.Account;
+import com.liyu.server.tables.pojos.Organization;
 import com.liyu.server.tables.records.AccountRecord;
 import com.liyu.server.utils.CommonUtils;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -16,6 +17,7 @@ import java.util.Date;
 import java.util.List;
 
 import static com.liyu.server.tables.Account.ACCOUNT;
+import static com.liyu.server.tables.Organization.ORGANIZATION;
 import static com.liyu.server.tables.OrganizationAccount.ORGANIZATION_ACCOUNT;
 
 @Service
@@ -43,6 +45,11 @@ public class AccountServiceImpl implements AccountService {
             }
         }
 
+    }
+
+    @Override
+    public Account getById(ULong id) {
+        return context.selectFrom(ACCOUNT).where(ACCOUNT.ID.equal(id)).fetchOne().into(Account.class);
     }
 
     @Override
@@ -124,5 +131,15 @@ public class AccountServiceImpl implements AccountService {
         for (String organizationId : organizationIds) {
             this.bindOrganization(accountId, organizationId);
         }
+    }
+
+    @Override
+    public List<Organization> organizations(String accountId) {
+        return context.select(ORGANIZATION.fields())
+                .from(ORGANIZATION_ACCOUNT)
+                .leftJoin(ORGANIZATION)
+                .on(ORGANIZATION_ACCOUNT.ORGANIZATION_ID.eq(ORGANIZATION.ORGANIZATION_ID))
+                .where(ORGANIZATION_ACCOUNT.ACCOUNT_ID.eq(accountId))
+                .fetch().into(Organization.class);
     }
 }

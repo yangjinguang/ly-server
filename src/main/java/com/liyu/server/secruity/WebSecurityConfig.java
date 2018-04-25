@@ -68,9 +68,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         // 允许swagger不带token访问
         web.ignoring().antMatchers("/v2/api-docs",//swagger api json
-                "/swagger-resources/configuration/ui",//用来获取支持的动作
-                "/swagger-resources",//用来获取api-docs的URI
-                "/swagger-resources/configuration/security",//安全选项
+                "/webjars/springfox-swagger-ui/**",
+                "/swagger-resources/**",//用来获取api-docs的URI
                 "/swagger-ui.html");
     }
 }
