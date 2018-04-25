@@ -41,6 +41,14 @@ public class OrganizationController {
         return APIResponse.success(organizations);
     }
 
+    @ApiOperation(value = "获取组织", notes = "")
+    @ApiImplicitParam(name = "id", value = "id", required = true, dataType = "Long", paramType = "path")
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public APIResponse list(@PathVariable(value = "id", required = true) Long id) {
+        Organization organization = organizationService.byId(ULong.valueOf(id));
+        return APIResponse.success(organization);
+    }
+
     @ApiOperation(value = "获取组织树", notes = "")
     @RequestMapping(value = "/tree", method = RequestMethod.GET)
     public APIResponse list(@RequestHeader(value = "X-TENANT-ID") String tenantId) {

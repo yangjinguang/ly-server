@@ -56,4 +56,19 @@ public interface AccountService {
      */
     void delete(ULong id);
 
+    /**
+     * 绑定账户到组织
+     *
+     * @param accountId      账户ID
+     * @param organizationId 组织ID
+     */
+    void bindOrganization(String accountId, String organizationId);
+
+    /**
+     * 批量绑定账户到组织
+     *
+     * @param accountId       账户ID
+     * @param organizationIds 组织ID列表
+     */
+    void bindOrganizations(String accountId, List<String> organizationIds);
 }

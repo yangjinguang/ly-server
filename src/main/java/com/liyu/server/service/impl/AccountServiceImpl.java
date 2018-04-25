@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 import static com.liyu.server.tables.Account.ACCOUNT;
+import static com.liyu.server.tables.OrganizationAccount.ORGANIZATION_ACCOUNT;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -103,4 +104,25 @@ public class AccountServiceImpl implements AccountService {
         context.deleteFrom(ACCOUNT).where(ACCOUNT.ID.eq(id)).execute();
     }
 
+    @Override
+    public void bindOrganization(String accountId, String organizationId) {
+        Integer count = context.selectCount().from(ORGANIZATION_ACCOUNT).where(ORGANIZATION_ACCOUNT.ACCOUNT_ID.eq(accountId), ORGANIZATION_ACCOUNT.ORGANIZATION_ID.eq(organizationId)).fetchOne().into(int.class);
+        if (count <= 0) {
+            context.insertInto(ORGANIZATION_ACCOUNT).columns(
+                    ORGANIZATION_ACCOUNT.ACCOUNT_ID,
+                    ORGANIZATION_ACCOUNT.ORGANIZATION_ID
+            ).values(
+                    accountId,
+                    organizationId
+            ).execute();
+        }
+
+    }
+
+    @Override
+    public void bindOrganizations(String accountId, List<String> organizationIds) {
+        for (String organizationId : organizationIds) {
+            this.bindOrganization(accountId, organizationId);
+        }
+    }
 }

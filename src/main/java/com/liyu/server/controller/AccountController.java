@@ -1,5 +1,6 @@
 package com.liyu.server.controller;
 
+import com.liyu.server.model.AccountCreateBody;
 import com.liyu.server.service.AccountService;
 import com.liyu.server.tables.pojos.Account;
 import com.liyu.server.utils.APIResponse;
@@ -38,8 +39,12 @@ public class AccountController {
     @ResponseBody
     @ApiImplicitParam(name = "createData", value = "账户信息", required = true, dataType = "Account")
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public APIResponse create(@RequestBody Account newAccount) {
-        Account account = accountService.create(newAccount);
+    public APIResponse create(@RequestBody AccountCreateBody newAccount) {
+        Account account = accountService.create(newAccount.getAccount());
+        List<String> organizationIds = newAccount.getOrganizationIds();
+        if (organizationIds.size() > 0) {
+            accountService.bindOrganizations(account.getAccountId(), newAccount.getOrganizationIds());
+        }
         account.setSalt(null);
         account.setPassword(null);
         return APIResponse.success(account);
