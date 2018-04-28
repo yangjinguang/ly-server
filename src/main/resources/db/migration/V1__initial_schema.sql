@@ -11,7 +11,6 @@ CREATE TABLE `account` (
   `wx_open_id` varchar(45) DEFAULT '' COMMENT '微信OPEN ID',
   `is_admin` tinyint(4) DEFAULT '0' COMMENT '是否是管理员',
   `enabled` tinyint(4) DEFAULT '1' COMMENT '是否启用',
-  `role_id` varchar(45) NOT NULL DEFAULT '' COMMENT '角色ID',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`)
@@ -27,6 +26,7 @@ CREATE TABLE `organization` (
   `is_root` tinyint(4) DEFAULT '0' COMMENT '是否是租户根组织',
   `is_class` tinyint(4) DEFAULT '0' COMMENT '是否是班级',
   `enabled` tinyint(4) DEFAULT '1' COMMENT '是否启用',
+  `order` int(11) DEFAULT '0' COMMENT '排序',
   `tenant_id` varchar(45) NOT NULL DEFAULT '' COMMENT '租户ID',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',

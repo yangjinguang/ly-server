@@ -33,6 +33,30 @@ public interface OrganizationService {
     List<Organization> listByTenantId(String tenantId);
 
     /**
+     * 获取组织根节点
+     *
+     * @param tenantId 租户ID
+     * @return Organization
+     */
+    OrganizationTree getRoot(String tenantId);
+
+    /**
+     * 根据parent Id获取组织列表
+     *
+     * @param parentId parent Id
+     * @return List<Organization>
+     */
+    List<OrganizationTree> listByParentId(String parentId);
+
+    /**
+     * 根据parent Id获取组织个数
+     *
+     * @param parentId parent Id
+     * @return int
+     */
+    int countByParentId(String parentId);
+
+    /**
      * 获取组织树
      *
      * @param tenantId 租户ID

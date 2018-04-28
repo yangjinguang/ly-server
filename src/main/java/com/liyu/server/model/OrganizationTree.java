@@ -5,21 +5,19 @@ import com.liyu.server.tables.pojos.Organization;
 import java.util.List;
 
 public class OrganizationTree extends Organization {
+    private Integer numberOfChildren;
     private List<OrganizationTree> children;
 
+    public void setNumberOfChildren(Integer numberOfChildren) {
+        this.numberOfChildren = numberOfChildren;
+    }
+
+    public Integer getNumberOfChildren() {
+        return numberOfChildren;
+    }
+
     public OrganizationTree(Organization organization) {
-        this.setId(organization.getId());
-        this.setOrganizationId(organization.getOrganizationId());
-        this.setParentId(organization.getParentId());
-        this.setName(organization.getName());
-        this.setDescription(organization.getDescription());
-        this.setIsClass(organization.getIsClass());
-        this.setIsRoot(organization.getIsRoot());
-        this.setAvatar(organization.getAvatar());
-        this.setTenantId(organization.getTenantId());
-        this.setEnabled(organization.getEnabled());
-        this.setCreatedAt(organization.getCreatedAt());
-        this.setUpdatedAt(organization.getUpdatedAt());
+        super(organization);
     }
 
     public void setChildren(List<OrganizationTree> children) {

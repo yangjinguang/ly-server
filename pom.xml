@@ -230,6 +230,10 @@
                                 </forcedType>
                                 <forcedType>
                                     <name>BOOLEAN</name>
+                                    <expression>.*.account.is_admin</expression>
+                                </forcedType>
+                                <forcedType>
+                                    <name>BOOLEAN</name>
                                     <expression>.*.student.enabled</expression>
                                 </forcedType>
                                 <forcedType>

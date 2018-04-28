@@ -23,7 +23,6 @@ public class AccountTests {
         newAccount.setUsername("root");
         newAccount.setPassword("123456");
         newAccount.setEmail("root@ly.com");
-        newAccount.setRoleId("");
         Account account = accountService.create(newAccount);
     }
 

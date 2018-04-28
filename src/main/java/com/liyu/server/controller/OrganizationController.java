@@ -15,6 +15,7 @@ import org.jooq.types.ULong;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -47,6 +48,21 @@ public class OrganizationController {
     public APIResponse list(@PathVariable(value = "id", required = true) Long id) {
         Organization organization = organizationService.byId(ULong.valueOf(id));
         return APIResponse.success(organization);
+    }
+
+    @ApiOperation(value = "获取组织根节点", notes = "")
+    @RequestMapping(value = "/root", method = RequestMethod.GET)
+    public APIResponse getRoot(@RequestHeader(value = "X-TENANT-ID") String tenantId) {
+        OrganizationTree root = organizationService.getRoot(tenantId);
+        return APIResponse.success(root);
+    }
+
+    @ApiOperation(value = "获取组织子节点", notes = "")
+    @ApiImplicitParam(name = "parentId", value = "parentId", required = true, dataType = "String", paramType = "path")
+    @RequestMapping(value = "/{parentId}/children", method = RequestMethod.GET)
+    public APIResponse children(@PathVariable(value = "parentId", required = true) String parentId) {
+        List<OrganizationTree> organizationTrees = organizationService.listByParentId(parentId);
+        return APIResponse.success(organizationTrees);
     }
 
     @ApiOperation(value = "获取组织树", notes = "")

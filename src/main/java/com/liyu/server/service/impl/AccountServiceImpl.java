@@ -72,7 +72,6 @@ public class AccountServiceImpl implements AccountService {
                 ACCOUNT.EMAIL,
                 ACCOUNT.WX_OPEN_ID,
                 ACCOUNT.AVATAR,
-                ACCOUNT.ROLE_ID,
                 ACCOUNT.CREATED_AT,
                 ACCOUNT.UPDATED_AT
         ).values(
@@ -84,7 +83,6 @@ public class AccountServiceImpl implements AccountService {
                 newAccount.getEmail(),
                 newAccount.getWxOpenId(),
                 newAccount.getAvatar(),
-                newAccount.getRoleId(),
                 currentTime,
                 currentTime
         ).returning().fetchOne().into(Account.class);
@@ -98,9 +96,6 @@ public class AccountServiceImpl implements AccountService {
         }
         if (!updateData.getEmail().isEmpty()) {
             accountRecord.setEmail(updateData.getEmail());
-        }
-        if (updateData.getRoleId() != null) {
-            accountRecord.setRoleId(updateData.getRoleId());
         }
         accountRecord.update();
         return accountRecord.into(Account.class);

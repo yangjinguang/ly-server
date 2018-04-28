@@ -36,6 +36,26 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
+    public OrganizationTree getRoot(String tenantId) {
+        Organization organization = context.selectFrom(ORGANIZATION).where(ORGANIZATION.PARENT_ID.eq("ROOT"), ORGANIZATION.TENANT_ID.eq(tenantId))
+                .fetchOptional()
+                .orElseThrow(() -> new NoDataFoundException("organization not found"))
+                .into(Organization.class);
+        OrganizationTree organizationTreeRoot = new OrganizationTree(organization);
+        List<Organization> organizations = context.selectFrom(ORGANIZATION).where(ORGANIZATION.PARENT_ID.eq(organization.getOrganizationId()))
+                .fetch()
+                .into(Organization.class);
+        ArrayList<OrganizationTree> children = new ArrayList<>();
+        for (Organization org : organizations) {
+            OrganizationTree newTree = new OrganizationTree(org);
+            newTree.setNumberOfChildren(this.countByParentId(org.getOrganizationId()));
+            children.add(newTree);
+        }
+        organizationTreeRoot.setChildren(children);
+        return organizationTreeRoot;
+    }
+
+    @Override
     public List<Organization> list() {
         return context.selectFrom(ORGANIZATION).fetch().into(Organization.class);
     }
@@ -61,6 +81,24 @@ public class OrganizationServiceImpl implements OrganizationService {
                 this.orgTreeChild(tree, organizations);
             }
         }
+    }
+
+    @Override
+    public List<OrganizationTree> listByParentId(String parentId) {
+        List<Organization> organizations = context.selectFrom(ORGANIZATION).where(ORGANIZATION.PARENT_ID.eq(parentId)).fetch().into(Organization.class);
+        ArrayList<OrganizationTree> organizationTrees = new ArrayList<>();
+        for (Organization organization : organizations) {
+            OrganizationTree newTree = new OrganizationTree(organization);
+            newTree.setNumberOfChildren(this.countByParentId(organization.getOrganizationId()));
+            organizationTrees.add(newTree);
+        }
+        return organizationTrees;
+    }
+
+
+    @Override
+    public int countByParentId(String parentId) {
+        return context.selectCount().from(ORGANIZATION).where(ORGANIZATION.PARENT_ID.eq(parentId)).fetchOne().into(int.class);
     }
 
     @Override

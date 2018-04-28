@@ -63,7 +63,6 @@ public class ServerApplicationTests {
         newAccount.setPhone("10000000000");
         newAccount.setEmail("root@ly.com");
         newAccount.setWxOpenId("");
-        newAccount.setRoleId("");
         Account account = accountService.create(newAccount);
 
         // 绑定帐号到租户

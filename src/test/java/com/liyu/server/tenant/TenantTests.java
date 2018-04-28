@@ -21,7 +21,7 @@ public class TenantTests {
     @Test
     public void create() {
         Tenant newTenant = new Tenant();
-        newTenant.setName("test-2");
+        newTenant.setName("test-1");
         newTenant.setDescription("test-test");
         tenantService.create(newTenant);
     }
