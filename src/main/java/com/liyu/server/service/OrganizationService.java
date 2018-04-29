@@ -111,4 +111,20 @@ public interface OrganizationService {
      * @return List<Account>
      */
     List<Account> accounts(String organizationId);
+
+    /**
+     * 获取所有所有子节点ID
+     *
+     * @param organizationId 组织ID
+     * @return List<String>
+     */
+    List<String> getAllChildrenOrganizationIds(String organizationId);
+
+    /**
+     * 获取当前及其所有子节点的账户列表
+     *
+     * @param organizationId 组织ID
+     * @return List<Account>
+     */
+    List<Account> accountsDeep(String organizationId);
 }

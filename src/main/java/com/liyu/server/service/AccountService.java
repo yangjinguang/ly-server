@@ -16,6 +16,14 @@ public interface AccountService {
     List<Account> list();
 
     /**
+     * 根据租户ID获取账户列表
+     *
+     * @param tenantId 租户ID
+     * @return List<Account>
+     */
+    List<Account> listByTenantId(String tenantId);
+
+    /**
      * 根据username password获取用户
      * 用来验证用户登录
      *

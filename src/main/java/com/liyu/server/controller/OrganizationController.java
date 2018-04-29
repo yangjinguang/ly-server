@@ -139,15 +139,22 @@ public class OrganizationController {
     @ResponseBody
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "id", required = true, dataType = "Long", paramType = "path"),
+            @ApiImplicitParam(name = "deep", value = "是否获取子节点", required = false, dataType = "Boolean", paramType = "query"),
             @ApiImplicitParam(name = "page", value = "页码", required = false, dataType = "int", paramType = "query"),
             @ApiImplicitParam(name = "size", value = "每页条数", required = false, dataType = "int", paramType = "query")
     })
     @RequestMapping(value = "/{id}/accounts", method = RequestMethod.GET)
     public APIResponse list(@PathVariable(value = "id", required = true) Long id,
+                            @RequestParam(value = "deep", required = false) Boolean deep,
                             @RequestParam(value = "page", required = false) Integer page,
                             @RequestParam(value = "size", required = false) Integer size) {
         Organization organization = organizationService.byId(ULong.valueOf(id));
-        List<Account> accounts = organizationService.accounts(organization.getOrganizationId());
+        List<Account> accounts = new ArrayList<>();
+        if (deep) {
+            accounts = organizationService.accountsDeep(organization.getOrganizationId());
+        } else {
+            accounts = organizationService.accounts(organization.getOrganizationId());
+        }
         return APIResponse.success(accounts);
     }
 }

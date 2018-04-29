@@ -1,5 +1,6 @@
 package com.liyu.server.service.impl;
 
+import com.liyu.server.enums.AccountStatusEnum;
 import com.liyu.server.service.AccountService;
 import com.liyu.server.tables.pojos.Account;
 import com.liyu.server.tables.pojos.Organization;
@@ -19,6 +20,7 @@ import java.util.List;
 import static com.liyu.server.tables.Account.ACCOUNT;
 import static com.liyu.server.tables.Organization.ORGANIZATION;
 import static com.liyu.server.tables.OrganizationAccount.ORGANIZATION_ACCOUNT;
+import static com.liyu.server.tables.TenantAccount.TENANT_ACCOUNT;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -28,6 +30,17 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public List<Account> list() {
         return context.selectFrom(ACCOUNT).fetch().into(Account.class);
+    }
+
+    @Override
+    public List<Account> listByTenantId(String tenantId) {
+        return context.select(ACCOUNT.fields())
+                .from(TENANT_ACCOUNT)
+                .leftJoin(ACCOUNT)
+                .on(ACCOUNT.ACCOUNT_ID.eq(TENANT_ACCOUNT.ACCOUNT_ID))
+                .where(TENANT_ACCOUNT.TENANT_ID.eq(tenantId))
+                .fetch()
+                .into(Account.class);
     }
 
     @Override
@@ -68,10 +81,12 @@ public class AccountServiceImpl implements AccountService {
                 ACCOUNT.USERNAME,
                 ACCOUNT.PASSWORD,
                 ACCOUNT.SALT,
+                ACCOUNT.NAME,
                 ACCOUNT.PHONE,
                 ACCOUNT.EMAIL,
                 ACCOUNT.WX_OPEN_ID,
                 ACCOUNT.AVATAR,
+                ACCOUNT.STATUS,
                 ACCOUNT.CREATED_AT,
                 ACCOUNT.UPDATED_AT
         ).values(
@@ -79,10 +94,12 @@ public class AccountServiceImpl implements AccountService {
                 newAccount.getUsername(),
                 md5Pass,
                 salt,
+                newAccount.getName(),
                 newAccount.getPhone(),
                 newAccount.getEmail(),
                 newAccount.getWxOpenId(),
                 newAccount.getAvatar(),
+                AccountStatusEnum.NORMAL,
                 currentTime,
                 currentTime
         ).returning().fetchOne().into(Account.class);

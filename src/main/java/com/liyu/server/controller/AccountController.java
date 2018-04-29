@@ -3,6 +3,7 @@ package com.liyu.server.controller;
 import com.liyu.server.model.AccountCreateBody;
 import com.liyu.server.model.AccountDetail;
 import com.liyu.server.service.AccountService;
+import com.liyu.server.service.TenantService;
 import com.liyu.server.tables.pojos.Account;
 import com.liyu.server.tables.pojos.Organization;
 import com.liyu.server.utils.APIResponse;
@@ -24,12 +25,21 @@ public class AccountController {
     @Resource
     private AccountService accountService;
 
+    @Resource
+    private TenantService tenantService;
+
     @ApiOperation(value = "获取账户列表", notes = "")
     @ResponseBody
-    @ApiParam(name = "page", value = "页码", required = false)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "page", value = "页码", required = false, dataType = "int", paramType = "query"),
+            @ApiImplicitParam(name = "size", value = "每页条数", required = false, dataType = "int", paramType = "query")
+    })
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public APIResponse list(@RequestParam(value = "page", required = false) Integer page) {
-        List<Account> accounts = accountService.list();
+    public APIResponse list(
+            @RequestHeader(value = "X-TENANT-ID") String tenantId,
+            @RequestParam(value = "page", required = false) Integer page,
+            @RequestParam(value = "size", required = false) Integer size) {
+        List<Account> accounts = accountService.listByTenantId(tenantId);
         for (Account account : accounts) {
             account.setPassword(null);
             account.setSalt(null);
@@ -41,8 +51,11 @@ public class AccountController {
     @ResponseBody
     @ApiImplicitParam(name = "createData", value = "账户信息", required = true, dataType = "Account")
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public APIResponse create(@RequestBody AccountCreateBody newAccount) {
+    public APIResponse create(
+            @RequestHeader(value = "X-TENANT-ID") String tenantId,
+            @RequestBody AccountCreateBody newAccount) {
         Account account = accountService.create(newAccount.getAccount());
+        tenantService.bindAccount(tenantId, account.getAccountId());
         List<String> organizationIds = newAccount.getOrganizationIds();
         if (organizationIds.size() > 0) {
             accountService.bindOrganizations(account.getAccountId(), newAccount.getOrganizationIds());

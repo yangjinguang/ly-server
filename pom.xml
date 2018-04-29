@@ -23,7 +23,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
         <app.package>com.liyu.server</app.package>
-        <jooq.version>3.9.5</jooq.version>
+        <jooq.version>3.10.2</jooq.version>
         <fastjson.version>1.2.31</fastjson.version>
     </properties>
 
@@ -93,6 +93,21 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq</artifactId>
+            <version>${jooq.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq-meta</artifactId>
+            <version>${jooq.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq-codegen</artifactId>
+            <version>${jooq.version}</version>
         </dependency>
     </dependencies>
 
@@ -226,10 +241,6 @@
                                 </forcedType>
                                 <forcedType>
                                     <name>BOOLEAN</name>
-                                    <expression>.*.account.enabled</expression>
-                                </forcedType>
-                                <forcedType>
-                                    <name>BOOLEAN</name>
                                     <expression>.*.account.is_admin</expression>
                                 </forcedType>
                                 <forcedType>
@@ -243,6 +254,11 @@
                                 <forcedType>
                                     <name>BOOLEAN</name>
                                     <expression>.*.tenant.enabled</expression>
+                                </forcedType>
+                                <forcedType>
+                                    <userType>com.liyu.server.enums.AccountStatusEnum</userType>
+                                    <enumConverter>true</enumConverter>
+                                    <expression>.*.account.status</expression>
                                 </forcedType>
                             </forcedTypes>
                         </database>

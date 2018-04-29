@@ -16,6 +16,7 @@ import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 import static com.liyu.server.tables.Account.ACCOUNT;
@@ -197,6 +198,38 @@ public class OrganizationServiceImpl implements OrganizationService {
                 .leftJoin(ACCOUNT)
                 .on(ACCOUNT.ACCOUNT_ID.eq(ORGANIZATION_ACCOUNT.ACCOUNT_ID))
                 .where(ORGANIZATION_ACCOUNT.ORGANIZATION_ID.eq(organizationId))
+                .fetch()
+                .into(Account.class);
+    }
+
+    private void getChildrenOrganizationIds(String organizationId, List<String> resIds) {
+        List<String> organizationIds = context.select(ORGANIZATION.ORGANIZATION_ID).from(ORGANIZATION)
+                .where(ORGANIZATION.PARENT_ID.eq(organizationId)).fetch().into(String.class);
+        resIds.addAll(organizationIds);
+        if (organizationIds.size() > 0) {
+            for (String childId : organizationIds) {
+                this.getChildrenOrganizationIds(childId, resIds);
+            }
+        }
+    }
+
+    @Override
+    public List<String> getAllChildrenOrganizationIds(String organizationId) {
+        ArrayList<String> resIds = new ArrayList<String>();
+        this.getChildrenOrganizationIds(organizationId, resIds);
+        return resIds;
+    }
+
+    @Override
+    public List<Account> accountsDeep(String organizationId) {
+        List<String> ids = this.getAllChildrenOrganizationIds(organizationId);
+        ids.add(organizationId);
+        ids = new ArrayList<String>(new HashSet<>(ids));
+        return context.select(ACCOUNT.fields())
+                .from(ORGANIZATION_ACCOUNT)
+                .leftJoin(ACCOUNT)
+                .on(ACCOUNT.ACCOUNT_ID.eq(ORGANIZATION_ACCOUNT.ACCOUNT_ID))
+                .where(ORGANIZATION_ACCOUNT.ORGANIZATION_ID.in(ids))
                 .fetch()
                 .into(Account.class);
     }
