@@ -96,10 +96,10 @@ public class OrganizationController {
     }
 
     @ApiOperation(value = "删除组织", notes = "")
-    @ApiImplicitParam(name = "id", value = "ID", required = true, dataType = "Long", paramType = "path")
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public APIResponse delete(@PathVariable Long id) {
-        organizationService.delete(ULong.valueOf(id));
+    @ApiImplicitParam(name = "organizationId", value = "组织 ID", required = true, dataType = "String", paramType = "path")
+    @RequestMapping(value = "/{organizationId}", method = RequestMethod.DELETE)
+    public APIResponse delete(@PathVariable String organizationId) {
+        organizationService.delete(organizationId);
         return APIResponse.success("success");
     }
 

@@ -145,23 +145,36 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Override
     public Organization update(ULong id, Organization newOrganization) {
-        OrganizationRecord organizationRecord = context.selectFrom(ORGANIZATION).where(ORGANIZATION.ID.eq(id)).fetchOptional().orElseThrow(() -> new NoDataFoundException("organization not found"));
-        if (!newOrganization.getName().isEmpty()) {
-            organizationRecord.setName(newOrganization.getName());
+        OrganizationRecord organizationRecord = context.selectFrom(ORGANIZATION)
+                .where(ORGANIZATION.ID.eq(id))
+                .fetchOptional()
+                .orElseThrow(() -> new NoDataFoundException("organization not found"));
+        String name = newOrganization.getName();
+        if (name != null && !name.isEmpty()) {
+            organizationRecord.setName(name);
         }
-        if (!newOrganization.getAvatar().isEmpty()) {
-            organizationRecord.setAvatar(newOrganization.getAvatar());
+        String avatar = newOrganization.getAvatar();
+        if (avatar != null && !avatar.isEmpty()) {
+            organizationRecord.setAvatar(avatar);
         }
-        if (newOrganization.getIsRoot() != null) {
-            organizationRecord.setIsRoot(newOrganization.getIsRoot());
+        String description = newOrganization.getDescription();
+        if (description != null && !description.isEmpty()) {
+            organizationRecord.setDescription(description);
         }
-        if (newOrganization.getIsClass() != null) {
-            organizationRecord.setIsClass(newOrganization.getIsClass());
+        Boolean isRoot = newOrganization.getIsRoot();
+        if (isRoot != null) {
+            organizationRecord.setIsRoot(isRoot);
         }
-        if (newOrganization.getParentId() != null) {
-            organizationRecord.setParentId(newOrganization.getParentId());
+        Boolean isClass = newOrganization.getIsClass();
+        if (isClass != null) {
+            organizationRecord.setIsClass(isClass);
         }
-        if (newOrganization.getTenantId() != null) {
+        String parentId = newOrganization.getParentId();
+        if (parentId != null && !parentId.isEmpty()) {
+            organizationRecord.setParentId(parentId);
+        }
+        String tenantId = newOrganization.getTenantId();
+        if (tenantId != null && !tenantId.isEmpty()) {
             organizationRecord.setTenantId(newOrganization.getTenantId());
         }
         organizationRecord.update();
@@ -169,8 +182,9 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
-    public void delete(ULong id) {
-        context.deleteFrom(ORGANIZATION).where(ORGANIZATION.ID.eq(id)).execute();
+    public void delete(String organizationId) {
+        context.deleteFrom(ORGANIZATION).where(ORGANIZATION.ORGANIZATION_ID.eq(organizationId)).execute();
+        context.deleteFrom(ORGANIZATION_ACCOUNT).where(ORGANIZATION_ACCOUNT.ORGANIZATION_ID.eq(organizationId)).execute();
     }
 
     @Override

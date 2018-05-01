@@ -84,9 +84,9 @@ public interface OrganizationService {
     /**
      * 删除组织
      *
-     * @param id 组织ID
+     * @param organizationId 组织ID
      */
-    void delete(ULong id);
+    void delete(String organizationId);
 
     /**
      * 绑定帐号到组织
