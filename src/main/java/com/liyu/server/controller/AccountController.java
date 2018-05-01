@@ -69,12 +69,12 @@ public class AccountController {
     @ResponseBody
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "账户ID", required = true, dataType = "Long", paramType = "path"),
-            @ApiImplicitParam(name = "updateData", value = "账户信息", required = true, dataType = "Account", paramType = "body")
+            @ApiImplicitParam(name = "newAccount", value = "账户信息", required = true, dataType = "Account", paramType = "body")
     })
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public APIResponse create(@PathVariable Long id,
-                              @RequestBody Account updateData) {
-        Account account = accountService.update(ULong.valueOf(id), updateData);
+                              @RequestBody Account newAccount) {
+        Account account = accountService.update(ULong.valueOf(id), newAccount);
         return APIResponse.success(account);
     }
 

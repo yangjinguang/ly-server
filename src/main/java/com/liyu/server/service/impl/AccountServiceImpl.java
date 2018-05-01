@@ -8,6 +8,7 @@ import com.liyu.server.tables.records.AccountRecord;
 import com.liyu.server.utils.CommonUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jooq.DSLContext;
+import org.jooq.exception.NoDataFoundException;
 import org.jooq.types.ULong;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
@@ -106,13 +107,38 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account update(ULong id, Account updateData) {
-        AccountRecord accountRecord = context.selectFrom(ACCOUNT).where(ACCOUNT.ID.eq(id)).fetchOne();
-        if (!updateData.getUsername().isEmpty()) {
-            accountRecord.setUsername(updateData.getUsername());
+    public Account update(ULong id, Account newAccount) {
+        AccountRecord accountRecord = context.selectFrom(ACCOUNT)
+                .where(ACCOUNT.ID.eq(id))
+                .fetchOptional()
+                .orElseThrow(() -> new NoDataFoundException("account not found"));
+        String username = newAccount.getUsername();
+        if (username != null && !username.isEmpty()) {
+            accountRecord.setUsername(username);
         }
-        if (!updateData.getEmail().isEmpty()) {
-            accountRecord.setEmail(updateData.getEmail());
+        String name = newAccount.getName();
+        if (name != null && !name.isEmpty()) {
+            accountRecord.setName(name);
+        }
+        String email = newAccount.getEmail();
+        if (email != null && !email.isEmpty()) {
+            accountRecord.setEmail(email);
+        }
+        String phone = newAccount.getPhone();
+        if (phone != null && !phone.isEmpty()) {
+            accountRecord.setPhone(phone);
+        }
+        String wxOpenId = newAccount.getWxOpenId();
+        if (wxOpenId != null && !wxOpenId.isEmpty()) {
+            accountRecord.setWxOpenId(wxOpenId);
+        }
+        String avatar = newAccount.getAvatar();
+        if (avatar != null && !avatar.isEmpty()) {
+            accountRecord.setAvatar(avatar);
+        }
+        AccountStatusEnum status = newAccount.getStatus();
+        if (status != null) {
+            accountRecord.setStatus(status);
         }
         accountRecord.update();
         return accountRecord.into(Account.class);
