@@ -40,7 +40,7 @@ public class AccountServiceImpl implements AccountService {
                 .from(TENANT_ACCOUNT)
                 .leftJoin(ACCOUNT)
                 .on(ACCOUNT.ACCOUNT_ID.eq(TENANT_ACCOUNT.ACCOUNT_ID))
-                .where(TENANT_ACCOUNT.TENANT_ID.eq(tenantId))
+                .where(TENANT_ACCOUNT.TENANT_ID.eq(tenantId), ACCOUNT.STATUS.notEqual(AccountStatusEnum.DELETED))
                 .fetch()
                 .into(Account.class);
     }
@@ -146,6 +146,10 @@ public class AccountServiceImpl implements AccountService {
         if (status != null) {
             accountRecord.setStatus(status);
         }
+        Boolean isAdmin = newAccount.getIsAdmin();
+        if (isAdmin != null) {
+            accountRecord.setIsAdmin(isAdmin);
+        }
         List<String> organizationIds = newAccount.getOrganizationIds();
         if (organizationIds != null) {
             this.unbindOrganizationsAll(accountRecord.getAccountId());
@@ -195,5 +199,16 @@ public class AccountServiceImpl implements AccountService {
                 .on(ORGANIZATION_ACCOUNT.ORGANIZATION_ID.eq(ORGANIZATION.ORGANIZATION_ID))
                 .where(ORGANIZATION_ACCOUNT.ACCOUNT_ID.eq(accountId))
                 .fetch().into(Organization.class);
+    }
+
+    @Override
+    public Account changeStatus(ULong id, AccountStatusEnum status) {
+        AccountRecord account = context.selectFrom(ACCOUNT)
+                .where(ACCOUNT.ID.eq(id))
+                .fetchOptional()
+                .orElseThrow(() -> new NoDataFoundException("account not found"));
+        account.setStatus(status);
+        account.update();
+        return account.into(Account.class);
     }
 }

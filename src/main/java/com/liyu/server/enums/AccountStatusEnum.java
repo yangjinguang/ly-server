@@ -1,5 +1,7 @@
 package com.liyu.server.enums;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum AccountStatusEnum {
     NORMAL("正常"),
     BLOCKED("已停用"),
@@ -13,5 +15,10 @@ public enum AccountStatusEnum {
 
     public String getDesc() {
         return desc;
+    }
+
+    @JsonValue
+    public int toValue() {
+        return ordinal();
     }
 }

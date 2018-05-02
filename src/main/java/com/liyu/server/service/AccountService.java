@@ -1,5 +1,6 @@
 package com.liyu.server.service;
 
+import com.liyu.server.enums.AccountStatusEnum;
 import com.liyu.server.model.AccountDetail;
 import com.liyu.server.tables.pojos.Account;
 import com.liyu.server.tables.pojos.Organization;
@@ -104,4 +105,13 @@ public interface AccountService {
      * @return List<Organization>
      */
     List<Organization> organizations(String accountId);
+
+    /**
+     * 更改账户状态
+     *
+     * @param id     ID
+     * @param status 状态
+     * @return Account
+     */
+    Account changeStatus(ULong id, AccountStatusEnum status);
 }

@@ -43,7 +43,7 @@ public class OrganizationController {
         return APIResponse.success(organizationDetails);
     }
 
-    @ApiOperation(value = "获取组织", notes = "")
+    @ApiOperation(value = "获取组织详情", notes = "")
     @ApiImplicitParam(name = "id", value = "id", required = true, dataType = "Long", paramType = "path")
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public APIResponse list(@PathVariable(value = "id", required = true) Long id) {

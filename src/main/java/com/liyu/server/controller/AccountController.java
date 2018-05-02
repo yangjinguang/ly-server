@@ -1,5 +1,6 @@
 package com.liyu.server.controller;
 
+import com.liyu.server.model.AccountChangeStatusBody;
 import com.liyu.server.model.AccountCreateBody;
 import com.liyu.server.model.AccountDetail;
 import com.liyu.server.model.OrganizationDetail;
@@ -127,5 +128,18 @@ public class AccountController {
         accountDetail.setOrganizationIds(organizationIds);
         accountDetail.setOrganizations(organizationDetails);
         return APIResponse.success(accountDetail);
+    }
+
+    @ApiOperation(value = "更改状态", notes = "")
+    @ResponseBody
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "ID", required = true, dataType = "Long", paramType = "path"),
+            @ApiImplicitParam(name = "accountChangeStatusBody", value = "账户信息", required = true, dataType = "AccountChangeStatusBody", paramType = "body")
+    })
+    @RequestMapping(value = "/{id}/status", method = RequestMethod.PUT)
+    public APIResponse changeStatus(@PathVariable Long id,
+                                    @RequestBody AccountChangeStatusBody accountChangeStatusBody) {
+        Account account = accountService.changeStatus(ULong.valueOf(id), accountChangeStatusBody.getStatus());
+        return APIResponse.success(account);
     }
 }

@@ -1,5 +1,6 @@
 package com.liyu.server.service.impl;
 
+import com.liyu.server.enums.AccountStatusEnum;
 import com.liyu.server.model.OrganizationDetail;
 import com.liyu.server.model.OrganizationTree;
 import com.liyu.server.service.OrganizationService;
@@ -233,7 +234,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         return context.select(ACCOUNT.fields()).from(ORGANIZATION_ACCOUNT)
                 .leftJoin(ACCOUNT)
                 .on(ACCOUNT.ACCOUNT_ID.eq(ORGANIZATION_ACCOUNT.ACCOUNT_ID))
-                .where(ORGANIZATION_ACCOUNT.ORGANIZATION_ID.eq(organizationId))
+                .where(ORGANIZATION_ACCOUNT.ORGANIZATION_ID.eq(organizationId), ACCOUNT.STATUS.notEqual(AccountStatusEnum.DELETED))
                 .fetch()
                 .into(Account.class);
     }
@@ -265,7 +266,7 @@ public class OrganizationServiceImpl implements OrganizationService {
                 .from(ORGANIZATION_ACCOUNT)
                 .leftJoin(ACCOUNT)
                 .on(ACCOUNT.ACCOUNT_ID.eq(ORGANIZATION_ACCOUNT.ACCOUNT_ID))
-                .where(ORGANIZATION_ACCOUNT.ORGANIZATION_ID.in(ids))
+                .where(ORGANIZATION_ACCOUNT.ORGANIZATION_ID.in(ids), ACCOUNT.STATUS.notEqual(AccountStatusEnum.DELETED))
                 .fetch()
                 .into(Account.class);
     }
