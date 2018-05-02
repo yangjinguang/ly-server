@@ -1,5 +1,6 @@
 package com.liyu.server;
 
+import com.liyu.server.model.AccountDetail;
 import com.liyu.server.service.AccountService;
 import com.liyu.server.service.OrganizationService;
 import com.liyu.server.service.TenantService;
@@ -57,7 +58,7 @@ public class ServerApplicationTests {
         Organization organization = organizationService.create(newOrganization);
 
         // 创建帐号
-        Account newAccount = new Account();
+        AccountDetail newAccount = new AccountDetail();
         newAccount.setUsername("root");
         newAccount.setPassword("123456");
         newAccount.setPhone("10000000000");

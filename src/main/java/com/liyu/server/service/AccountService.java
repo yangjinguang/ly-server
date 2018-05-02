@@ -1,5 +1,6 @@
 package com.liyu.server.service;
 
+import com.liyu.server.model.AccountDetail;
 import com.liyu.server.tables.pojos.Account;
 import com.liyu.server.tables.pojos.Organization;
 import org.jooq.types.ULong;
@@ -55,16 +56,16 @@ public interface AccountService {
      * @param newAccount 账户详情
      * @return Account
      */
-    Account create(Account newAccount);
+    Account create(AccountDetail newAccount);
 
     /**
      * 更新账户信息
      *
      * @param id         账户ID
-     * @param updateData 账户数据
+     * @param newAccount 账户数据
      * @return Account
      */
-    Account update(ULong id, Account updateData);
+    Account update(ULong id, AccountDetail newAccount);
 
     /**
      * 删除帐号
@@ -88,6 +89,13 @@ public interface AccountService {
      * @param organizationIds 组织ID列表
      */
     void bindOrganizations(String accountId, List<String> organizationIds);
+
+    /**
+     * 删除账户所有绑定部门
+     *
+     * @param accountId 账户ID
+     */
+    void unbindOrganizationsAll(String accountId);
 
     /**
      * 获取用户关联的组织列表

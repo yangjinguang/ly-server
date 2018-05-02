@@ -2,23 +2,34 @@ package com.liyu.server.model;
 
 import com.liyu.server.tables.Role;
 import com.liyu.server.tables.pojos.Account;
-import com.liyu.server.tables.pojos.Organization;
 
 import java.util.List;
 
 public class AccountDetail extends Account {
-    private List<Organization> organizations;
+    private List<String> organizationIds;
+    private List<OrganizationDetail> organizations;
     private List<Role> roles;
+
+    public AccountDetail() {
+    }
 
     public AccountDetail(Account value) {
         super(value);
     }
 
-    public List<Organization> getOrganizations() {
+    public void setOrganizationIds(List<String> organizaitonIds) {
+        this.organizationIds = organizaitonIds;
+    }
+
+    public List<String> getOrganizationIds() {
+        return organizationIds;
+    }
+
+    public List<OrganizationDetail> getOrganizations() {
         return organizations;
     }
 
-    public void setOrganizations(List<Organization> organizations) {
+    public void setOrganizations(List<OrganizationDetail> organizations) {
         this.organizations = organizations;
     }
 

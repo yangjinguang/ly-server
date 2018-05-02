@@ -1,6 +1,7 @@
 package com.liyu.server.service.impl;
 
 import com.liyu.server.enums.AccountStatusEnum;
+import com.liyu.server.model.AccountDetail;
 import com.liyu.server.service.AccountService;
 import com.liyu.server.tables.pojos.Account;
 import com.liyu.server.tables.pojos.Organization;
@@ -72,12 +73,12 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account create(Account newAccount) {
+    public Account create(AccountDetail newAccount) {
         Timestamp currentTime = new Timestamp(new Date().getTime());
         String salt = RandomStringUtils.random(5, true, true);
         String pass = newAccount.getPassword() + salt;
         String md5Pass = DigestUtils.md5DigestAsHex(pass.getBytes());
-        return context.insertInto(ACCOUNT).columns(
+        Account account = context.insertInto(ACCOUNT).columns(
                 ACCOUNT.ACCOUNT_ID,
                 ACCOUNT.USERNAME,
                 ACCOUNT.PASSWORD,
@@ -104,10 +105,15 @@ public class AccountServiceImpl implements AccountService {
                 currentTime,
                 currentTime
         ).returning().fetchOne().into(Account.class);
+        List<String> organizationIds = newAccount.getOrganizationIds();
+        if (organizationIds != null) {
+            this.bindOrganizations(account.getAccountId(), organizationIds);
+        }
+        return account;
     }
 
     @Override
-    public Account update(ULong id, Account newAccount) {
+    public Account update(ULong id, AccountDetail newAccount) {
         AccountRecord accountRecord = context.selectFrom(ACCOUNT)
                 .where(ACCOUNT.ID.eq(id))
                 .fetchOptional()
@@ -140,6 +146,11 @@ public class AccountServiceImpl implements AccountService {
         if (status != null) {
             accountRecord.setStatus(status);
         }
+        List<String> organizationIds = newAccount.getOrganizationIds();
+        if (organizationIds != null) {
+            this.unbindOrganizationsAll(accountRecord.getAccountId());
+            this.bindOrganizations(accountRecord.getAccountId(), organizationIds);
+        }
         accountRecord.update();
         return accountRecord.into(Account.class);
     }
@@ -169,6 +180,11 @@ public class AccountServiceImpl implements AccountService {
         for (String organizationId : organizationIds) {
             this.bindOrganization(accountId, organizationId);
         }
+    }
+
+    @Override
+    public void unbindOrganizationsAll(String accountId) {
+        context.deleteFrom(ORGANIZATION_ACCOUNT).where(ORGANIZATION_ACCOUNT.ACCOUNT_ID.eq(accountId)).execute();
     }
 
     @Override

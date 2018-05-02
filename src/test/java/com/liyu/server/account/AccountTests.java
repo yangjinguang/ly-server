@@ -1,5 +1,6 @@
 package com.liyu.server.account;
 
+import com.liyu.server.model.AccountDetail;
 import com.liyu.server.service.AccountService;
 import com.liyu.server.tables.pojos.Account;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,7 @@ public class AccountTests {
 
     @Test
     public void createRoot() {
-        Account newAccount = new Account();
+        AccountDetail newAccount = new AccountDetail();
         newAccount.setUsername("root");
         newAccount.setPassword("123456");
         newAccount.setEmail("root@ly.com");

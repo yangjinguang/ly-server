@@ -1,5 +1,6 @@
 package com.liyu.server.service.impl;
 
+import com.liyu.server.model.OrganizationDetail;
 import com.liyu.server.model.OrganizationTree;
 import com.liyu.server.service.OrganizationService;
 import com.liyu.server.tables.pojos.Account;
@@ -14,10 +15,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 import static com.liyu.server.tables.Account.ACCOUNT;
 import static com.liyu.server.tables.Organization.ORGANIZATION;
@@ -56,14 +54,38 @@ public class OrganizationServiceImpl implements OrganizationService {
         return organizationTreeRoot;
     }
 
-    @Override
-    public List<Organization> list() {
-        return context.selectFrom(ORGANIZATION).fetch().into(Organization.class);
+    private void _fillRoute(Organization curOrganization, List<Organization> organizations, List<String> route) {
+        for (Organization organization : organizations) {
+            if (organization.getOrganizationId().equals(curOrganization.getParentId())) {
+                route.add(organization.getName());
+                if (organization.getParentId() != null && !organization.getParentId().equals("ROOT")) {
+                    this._fillRoute(organization, organizations, route);
+                }
+                break;
+            }
+        }
     }
 
     @Override
-    public List<Organization> listByTenantId(String tenantId) {
-        return context.selectFrom(ORGANIZATION).where(ORGANIZATION.TENANT_ID.eq(tenantId)).fetch().into(Organization.class);
+    public List<String> getOrganizationRoute(Organization organization, List<Organization> organizations) {
+        ArrayList<String> route = new ArrayList<>();
+        route.add(organization.getName());
+        this._fillRoute(organization, organizations, route);
+        Collections.reverse(route);
+        return route;
+    }
+
+    @Override
+    public List<OrganizationDetail> listByTenantId(String tenantId) {
+        List<Organization> organizations = context.selectFrom(ORGANIZATION).where(ORGANIZATION.TENANT_ID.eq(tenantId)).fetch().into(Organization.class);
+        ArrayList<OrganizationDetail> organizationDetails = new ArrayList<>();
+        for (Organization organization : organizations) {
+            OrganizationDetail organizationDetail = new OrganizationDetail(organization);
+            List<String> route = this.getOrganizationRoute(organization, organizations);
+            organizationDetail.setRoute(route);
+            organizationDetails.add(organizationDetail);
+        }
+        return organizationDetails;
     }
 
     private void orgTreeChild(OrganizationTree organizationTree, List<Organization> organizations) {

@@ -1,5 +1,6 @@
 package com.liyu.server.controller;
 
+import com.liyu.server.model.OrganizationDetail;
 import com.liyu.server.model.OrganizationTree;
 import com.liyu.server.service.AccountService;
 import com.liyu.server.service.OrganizationService;
@@ -38,8 +39,8 @@ public class OrganizationController {
                             @RequestParam(value = "page", required = false) Integer page,
                             @RequestParam(value = "size", required = false) Integer size) {
         log.info("tenantId: " + tenantId);
-        List<Organization> organizations = organizationService.listByTenantId(tenantId);
-        return APIResponse.success(organizations);
+        List<OrganizationDetail> organizationDetails = organizationService.listByTenantId(tenantId);
+        return APIResponse.success(organizationDetails);
     }
 
     @ApiOperation(value = "获取组织", notes = "")

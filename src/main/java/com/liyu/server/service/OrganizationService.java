@@ -1,5 +1,6 @@
 package com.liyu.server.service;
 
+import com.liyu.server.model.OrganizationDetail;
 import com.liyu.server.model.OrganizationTree;
 import com.liyu.server.tables.pojos.Account;
 import com.liyu.server.tables.pojos.Organization;
@@ -18,19 +19,12 @@ public interface OrganizationService {
     Organization byId(ULong id);
 
     /**
-     * 获取组织列表
-     *
-     * @return List<Organization>
-     */
-    List<Organization> list();
-
-    /**
      * 根据租户ID获取组织列表
      *
      * @param tenantId 租户ID
      * @return List<Organization>
      */
-    List<Organization> listByTenantId(String tenantId);
+    List<OrganizationDetail> listByTenantId(String tenantId);
 
     /**
      * 获取组织根节点
@@ -39,6 +33,15 @@ public interface OrganizationService {
      * @return Organization
      */
     OrganizationTree getRoot(String tenantId);
+
+    /**
+     * 获取组织路径
+     *
+     * @param organization  组织信息
+     * @param organizations 组织列表
+     * @return List<String>
+     */
+    List<String> getOrganizationRoute(Organization organization, List<Organization> organizations);
 
     /**
      * 根据parent Id获取组织列表
