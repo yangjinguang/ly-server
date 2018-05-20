@@ -42,7 +42,9 @@ public class OrganizationServiceImpl implements OrganizationService {
                 .orElseThrow(() -> new NoDataFoundException("organization not found"))
                 .into(Organization.class);
         OrganizationTree organizationTreeRoot = new OrganizationTree(organization);
-        List<Organization> organizations = context.selectFrom(ORGANIZATION).where(ORGANIZATION.PARENT_ID.eq(organization.getOrganizationId()))
+        List<Organization> organizations = context.selectFrom(ORGANIZATION)
+                .where(ORGANIZATION.PARENT_ID.eq(organization.getOrganizationId()))
+                .orderBy(ORGANIZATION.ORDER)
                 .fetch()
                 .into(Organization.class);
         ArrayList<OrganizationTree> children = new ArrayList<>();
@@ -109,7 +111,10 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Override
     public List<OrganizationTree> listByParentId(String parentId) {
-        List<Organization> organizations = context.selectFrom(ORGANIZATION).where(ORGANIZATION.PARENT_ID.eq(parentId)).fetch().into(Organization.class);
+        List<Organization> organizations = context.selectFrom(ORGANIZATION)
+                .where(ORGANIZATION.PARENT_ID.eq(parentId))
+                .orderBy(ORGANIZATION.ORDER)
+                .fetch().into(Organization.class);
         ArrayList<OrganizationTree> organizationTrees = new ArrayList<>();
         for (Organization organization : organizations) {
             OrganizationTree newTree = new OrganizationTree(organization);
@@ -269,5 +274,16 @@ public class OrganizationServiceImpl implements OrganizationService {
                 .where(ORGANIZATION_ACCOUNT.ORGANIZATION_ID.in(ids), ACCOUNT.STATUS.notEqual(AccountStatusEnum.DELETED))
                 .fetch()
                 .into(Account.class);
+    }
+
+    @Override
+    public void changeOrder(List<ULong> ids) {
+        for (int i = 0; i < ids.size(); i++) {
+            ULong id = ids.get(i);
+            context.update(ORGANIZATION)
+                    .set(ORGANIZATION.ORDER, i)
+                    .where(ORGANIZATION.ID.eq(id))
+                    .execute();
+        }
     }
 }

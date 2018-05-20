@@ -130,4 +130,11 @@ public interface OrganizationService {
      * @return List<Account>
      */
     List<Account> accountsDeep(String organizationId);
+
+    /**
+     * 排序
+     *
+     * @param ids
+     */
+    void changeOrder(List<ULong> ids);
 }

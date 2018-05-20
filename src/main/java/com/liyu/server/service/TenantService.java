@@ -53,5 +53,11 @@ public interface TenantService {
      */
     void bindAccount(String tenantId, String accountId);
 
+    /**
+     * 根据用户名查找租户
+     *
+     * @param username 用户名
+     * @return List<Tenant>
+     */
     List<Tenant> byAccountUsername(String username);
 }

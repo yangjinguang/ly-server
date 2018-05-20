@@ -1,7 +1,6 @@
 package com.liyu.server.controller;
 
 import com.liyu.server.model.AccountChangeStatusBody;
-import com.liyu.server.model.AccountCreateBody;
 import com.liyu.server.model.AccountDetail;
 import com.liyu.server.model.OrganizationDetail;
 import com.liyu.server.service.AccountService;
@@ -10,7 +9,10 @@ import com.liyu.server.service.TenantService;
 import com.liyu.server.tables.pojos.Account;
 import com.liyu.server.tables.pojos.Organization;
 import com.liyu.server.utils.APIResponse;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.types.ULong;
 import org.springframework.web.bind.annotation.*;

@@ -1,6 +1,7 @@
 package com.liyu.server.controller;
 
 import com.liyu.server.model.OrganizationDetail;
+import com.liyu.server.model.OrganizationOrderBody;
 import com.liyu.server.model.OrganizationTree;
 import com.liyu.server.service.AccountService;
 import com.liyu.server.service.OrganizationService;
@@ -157,5 +158,16 @@ public class OrganizationController {
             accounts = organizationService.accounts(organization.getOrganizationId());
         }
         return APIResponse.success(accounts);
+    }
+
+    @ApiOperation(value = "组织排序", notes = "")
+    @RequestMapping(value = "/order", method = RequestMethod.PUT)
+    public APIResponse order(@RequestBody OrganizationOrderBody orderBody) {
+        ArrayList<ULong> uLongs = new ArrayList<>();
+        for (Long id : orderBody.getIds()) {
+            uLongs.add(ULong.valueOf(id));
+        }
+        organizationService.changeOrder(uLongs);
+        return APIResponse.success("success");
     }
 }

@@ -74,6 +74,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account create(AccountDetail newAccount) {
+//        context.selectCount().from(ACCOUNT).where(ACCOUNT)
         Timestamp currentTime = new Timestamp(new Date().getTime());
         String salt = RandomStringUtils.random(5, true, true);
         String pass = newAccount.getPassword() + salt;

@@ -3,7 +3,6 @@ package com.liyu.server.controller;
 import com.liyu.server.service.AccountService;
 import com.liyu.server.service.OrganizationService;
 import com.liyu.server.service.TenantService;
-import com.liyu.server.tables.pojos.Account;
 import com.liyu.server.tables.pojos.Organization;
 import com.liyu.server.tables.pojos.Tenant;
 import com.liyu.server.utils.APIResponse;
