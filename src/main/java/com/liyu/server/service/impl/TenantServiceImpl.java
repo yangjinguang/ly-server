@@ -35,23 +35,18 @@ public class TenantServiceImpl implements TenantService {
 
     @Override
     public Tenant create(Tenant newTenant) {
-        Timestamp currentTime = new Timestamp(new Date().getTime());
         TenantRecord tenantRecord = context.insertInto(TENANT).columns(
                 TENANT.TENANT_ID,
                 TENANT.NAME,
                 TENANT.ADDRESS,
                 TENANT.DESCRIPTION,
-                TENANT.AVATAR,
-                TENANT.CREATED_AT,
-                TENANT.UPDATED_AT
+                TENANT.AVATAR
         ).values(
                 CommonUtils.UUIDGenerator(),
                 newTenant.getName(),
                 newTenant.getAddress(),
                 newTenant.getDescription(),
-                newTenant.getAvatar(),
-                currentTime,
-                currentTime
+                newTenant.getAvatar()
         ).returning().fetchOne();
         return tenantRecord.into(Tenant.class);
     }

@@ -7,11 +7,18 @@ import java.util.List;
 
 public interface RoleService {
     /**
+     * count
+     *
+     * @return Integer
+     */
+    Integer count();
+
+    /**
      * 角色列表
      *
      * @return List<Role>
      */
-    List<Role> list();
+    List<Role> list(Integer offset, Integer size);
 
     /**
      * 创建角色
@@ -36,4 +43,6 @@ public interface RoleService {
      * @param id 角色ID
      */
     void delete(ULong id);
+
+    Role enabledOrDisabled(ULong id, Boolean enabled);
 }

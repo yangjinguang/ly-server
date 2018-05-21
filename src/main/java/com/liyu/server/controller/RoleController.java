@@ -27,15 +27,19 @@ public class RoleController {
             @ApiImplicitParam(name = "size", value = "每页条数", required = false, dataType = "int", paramType = "query")
     })
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public APIResponse list(@RequestParam(value = "page", required = false) Integer page) {
-        List<Role> roles = roleService.list();
-        return APIResponse.success(roles);
+    public APIResponse list(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+                            @RequestParam(value = "size", required = false, defaultValue = "20") Integer size) {
+        Integer total = roleService.count();
+        List<Role> roles = roleService.list((page - 1) * size, size);
+        return APIResponse.withPagination(roles, total, page, size);
     }
 
     @ApiOperation(value = "创建角色", notes = "")
     @ApiImplicitParam(name = "body", value = "角色详情", required = true, dataType = "Role", paramType = "body")
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public APIResponse create(@RequestBody Role newRole) {
+    public APIResponse create(@RequestBody Role newRole,
+                              @RequestHeader(value = "X-TENANT-ID") String tenantId) {
+        newRole.setTenantId(tenantId);
         Role role = roleService.create(newRole);
         return APIResponse.success(role);
     }
@@ -59,5 +63,18 @@ public class RoleController {
     public APIResponse delete(@PathVariable Long id) {
         roleService.delete(ULong.valueOf(id));
         return APIResponse.success("success");
+    }
+
+    @ApiOperation(value = "启用/禁用角色", notes = "")
+    @ResponseBody
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "角色ID", required = true, dataType = "Long", paramType = "path"),
+            @ApiImplicitParam(name = "enabled", value = "是否启用", required = true, dataType = "Boolean", paramType = "path")
+    })
+    @RequestMapping(value = "/{id}/{enabled}", method = RequestMethod.PUT)
+    public APIResponse enabledOrDisabled(@PathVariable(value = "id", required = true) Long id,
+                                         @PathVariable(value = "enabled", required = true) Boolean enabled) {
+        Role role = roleService.enabledOrDisabled(ULong.valueOf(id), enabled);
+        return APIResponse.success(role);
     }
 }

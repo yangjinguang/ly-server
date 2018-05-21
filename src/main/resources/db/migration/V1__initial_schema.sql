@@ -13,7 +13,11 @@ CREATE TABLE `account` (
   `status` tinyint(4) DEFAULT '0' COMMENT '状态',
   `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_account_id` (`account_id`),
+  UNIQUE KEY `uniq_username` (`username`),
+  UNIQUE KEY `uniq_phone` (`phone`),
+  UNIQUE KEY `uniq_email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '账户表';
 
 CREATE TABLE `organization` (
@@ -30,11 +34,13 @@ CREATE TABLE `organization` (
   `tenant_id` varchar(45) NOT NULL DEFAULT '' COMMENT '租户ID',
   `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_organization_id` (`organization_id`),
+  UNIQUE KEY `uniq_name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '组织架构表';
 
 CREATE TABLE `role` (
-  `id` bigint(20) unsigned NOT NULL COMMENT 'ID',
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `role_id` varchar(45) NOT NULL DEFAULT '' COMMENT '角色ID',
   `name` varchar(45) DEFAULT '' COMMENT '名称',
   `description` varchar(255) DEFAULT '' COMMENT '描述',
@@ -42,11 +48,13 @@ CREATE TABLE `role` (
   `enabled` tinyint(4) DEFAULT '1' COMMENT '是否启用',
   `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_role_id` (`role_id`),
+  UNIQUE KEY `uniq_name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '角色表';
 
 CREATE TABLE `student` (
-  `id` bigint(20) unsigned NOT NULL COMMENT 'ID',
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `student_id` varchar(45) NOT NULL DEFAULT '' COMMENT '学生ID',
   `name` varchar(255) DEFAULT '' COMMENT '姓名',
   `avatar` varchar(255) DEFAULT '' COMMENT '头像Url',
@@ -57,7 +65,8 @@ CREATE TABLE `student` (
   `account_id` varchar(45) NOT NULL DEFAULT '' COMMENT '帐号ID',
   `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_student_id` (`student_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '学生表';
 
 CREATE TABLE `tenant` (
@@ -70,7 +79,9 @@ CREATE TABLE `tenant` (
   `enabled` tinyint(4) DEFAULT '1' COMMENT '是否启用',
   `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_tenant_id` (`tenant_id`),
+  UNIQUE KEY `uniq_name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '租户表';
 
 CREATE TABLE `tenant_account` (

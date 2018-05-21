@@ -2,20 +2,18 @@ package com.liyu.server.service.impl;
 
 import com.liyu.server.service.RoleService;
 import com.liyu.server.tables.pojos.Role;
-
-import static com.liyu.server.tables.Role.ROLE;
-
 import com.liyu.server.tables.records.RoleRecord;
 import com.liyu.server.utils.CommonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
+import org.jooq.exception.NoDataFoundException;
 import org.jooq.types.ULong;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.sql.Timestamp;
-import java.util.Date;
 import java.util.List;
+
+import static com.liyu.server.tables.Role.ROLE;
 
 @Slf4j
 @Service
@@ -24,36 +22,42 @@ public class RoleServiceImpl implements RoleService {
     private DSLContext context;
 
     @Override
-    public List<Role> list() {
-        return context.selectFrom(ROLE).fetch().into(Role.class);
+    public Integer count() {
+        return context.selectCount().from(ROLE).fetchOne().into(int.class);
+    }
+
+    @Override
+    public List<Role> list(Integer offset, Integer size) {
+        return context.selectFrom(ROLE)
+                .offset(offset)
+                .limit(size)
+                .fetch().into(Role.class);
     }
 
     @Override
     public Role create(Role newRole) {
-        Timestamp currentTime = new Timestamp(new Date().getTime());
         return context.insertInto(ROLE).columns(
                 ROLE.ROLE_ID,
                 ROLE.NAME,
-                ROLE.TENANT_ID,
-                ROLE.CREATED_AT,
-                ROLE.UPDATED_AT
+                ROLE.TENANT_ID
         ).values(
                 CommonUtils.UUIDGenerator(),
                 newRole.getName(),
-                newRole.getTenantId(),
-                currentTime,
-                currentTime
+                newRole.getTenantId()
         ).returning().fetchOne().into(Role.class);
     }
 
     @Override
     public Role update(ULong id, Role newRole) {
-        RoleRecord roleRecord = context.selectFrom(ROLE).where(ROLE.ID.eq(id)).fetchOne();
+        RoleRecord roleRecord = context.selectFrom(ROLE)
+                .where(ROLE.ID.eq(id))
+                .fetchOptional()
+                .orElseThrow(() -> new NoDataFoundException("未找到此角色"));
         if (!newRole.getName().isEmpty()) {
             roleRecord.setName(newRole.getName());
         }
-        if (newRole.getTenantId() != null) {
-            roleRecord.setTenantId(newRole.getTenantId());
+        if (newRole.getDescription() != null) {
+            roleRecord.setDescription(newRole.getDescription());
         }
         roleRecord.update();
         return roleRecord.into(Role.class);
@@ -62,5 +66,17 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public void delete(ULong id) {
         context.deleteFrom(ROLE).where(ROLE.ID.eq(id)).execute();
+    }
+
+    @Override
+    public Role enabledOrDisabled(ULong id, Boolean enabled) {
+        RoleRecord roleRecord = context.selectFrom(ROLE)
+                .where(ROLE.ID.eq(id))
+                .fetchOptional().orElseThrow(() -> new NoDataFoundException("未找到此角色"));
+        if (enabled != null) {
+            roleRecord.set(ROLE.ENABLED, enabled);
+        }
+        roleRecord.update();
+        return roleRecord.into(Role.class);
     }
 }
