@@ -35,12 +35,22 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public List<Account> listByTenantId(String tenantId) {
+    public Integer countByTenantId(String tenantId) {
+        return context.selectCount().from(TENANT_ACCOUNT)
+                .where(TENANT_ACCOUNT.TENANT_ID.eq(tenantId))
+                .fetchOne()
+                .into(int.class);
+    }
+
+    @Override
+    public List<Account> listByTenantId(String tenantId, Integer offset, Integer size) {
         return context.select(ACCOUNT.fields())
                 .from(TENANT_ACCOUNT)
                 .leftJoin(ACCOUNT)
                 .on(ACCOUNT.ACCOUNT_ID.eq(TENANT_ACCOUNT.ACCOUNT_ID))
                 .where(TENANT_ACCOUNT.TENANT_ID.eq(tenantId), ACCOUNT.STATUS.notEqual(AccountStatusEnum.DELETED))
+                .offset(offset)
+                .limit(size)
                 .fetch()
                 .into(Account.class);
     }

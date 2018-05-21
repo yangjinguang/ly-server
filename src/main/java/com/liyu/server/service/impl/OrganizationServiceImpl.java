@@ -235,11 +235,21 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
-    public List<Account> accounts(String organizationId) {
+    public Integer accountsCount(String organizationId) {
+        return context.selectCount().from(ORGANIZATION_ACCOUNT)
+                .where(ORGANIZATION_ACCOUNT.ORGANIZATION_ID.eq(organizationId))
+                .fetchOne()
+                .into(int.class);
+    }
+
+    @Override
+    public List<Account> accounts(String organizationId, Integer offset, Integer size) {
         return context.select(ACCOUNT.fields()).from(ORGANIZATION_ACCOUNT)
                 .leftJoin(ACCOUNT)
                 .on(ACCOUNT.ACCOUNT_ID.eq(ORGANIZATION_ACCOUNT.ACCOUNT_ID))
                 .where(ORGANIZATION_ACCOUNT.ORGANIZATION_ID.eq(organizationId), ACCOUNT.STATUS.notEqual(AccountStatusEnum.DELETED))
+                .offset(offset)
+                .limit(size)
                 .fetch()
                 .into(Account.class);
     }
@@ -259,19 +269,32 @@ public class OrganizationServiceImpl implements OrganizationService {
     public List<String> getAllChildrenOrganizationIds(String organizationId) {
         ArrayList<String> resIds = new ArrayList<String>();
         this.getChildrenOrganizationIds(organizationId, resIds);
-        return resIds;
+        resIds.add(organizationId);
+        return new ArrayList<String>(new HashSet<>(resIds));
     }
 
     @Override
-    public List<Account> accountsDeep(String organizationId) {
-        List<String> ids = this.getAllChildrenOrganizationIds(organizationId);
-        ids.add(organizationId);
-        ids = new ArrayList<String>(new HashSet<>(ids));
+    public Integer accountDeepCount(List<String> ids) {
+        return context.selectCount().from(ORGANIZATION_ACCOUNT)
+                .leftJoin(ACCOUNT)
+                .on(ACCOUNT.ACCOUNT_ID.eq(ORGANIZATION_ACCOUNT.ACCOUNT_ID))
+                .where(ORGANIZATION_ACCOUNT.ORGANIZATION_ID.in(ids), ACCOUNT.STATUS.notEqual(AccountStatusEnum.DELETED))
+                .fetchOne()
+                .into(int.class);
+    }
+
+    @Override
+    public List<Account> accountsDeep(List<String> ids, Integer offset, Integer size) {
+//        List<String> ids = this.getAllChildrenOrganizationIds(organizationId);
+//        ids.add(organizationId);
+//        ids = new ArrayList<String>(new HashSet<>(ids));
         return context.select(ACCOUNT.fields())
                 .from(ORGANIZATION_ACCOUNT)
                 .leftJoin(ACCOUNT)
                 .on(ACCOUNT.ACCOUNT_ID.eq(ORGANIZATION_ACCOUNT.ACCOUNT_ID))
                 .where(ORGANIZATION_ACCOUNT.ORGANIZATION_ID.in(ids), ACCOUNT.STATUS.notEqual(AccountStatusEnum.DELETED))
+                .offset(offset)
+                .limit(size)
                 .fetch()
                 .into(Account.class);
     }

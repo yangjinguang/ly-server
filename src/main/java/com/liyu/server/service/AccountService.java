@@ -20,10 +20,20 @@ public interface AccountService {
     /**
      * 根据租户ID获取账户列表
      *
-     * @param tenantId 租户ID
-     * @return List<Account>
+     * @param tenantId
+     * @param offset
+     * @param size
+     * @return
      */
-    List<Account> listByTenantId(String tenantId);
+    List<Account> listByTenantId(String tenantId, Integer offset, Integer size);
+
+    /**
+     * 根据租户ID获取账户个数
+     *
+     * @param tenantId
+     * @return
+     */
+    Integer countByTenantId(String tenantId);
 
     /**
      * 根据username password获取用户

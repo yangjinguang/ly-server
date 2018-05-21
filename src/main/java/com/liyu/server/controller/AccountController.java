@@ -46,14 +46,15 @@ public class AccountController {
     @RequestMapping(value = "", method = RequestMethod.GET)
     public APIResponse list(
             @RequestHeader(value = "X-TENANT-ID") String tenantId,
-            @RequestParam(value = "page", required = false) Integer page,
-            @RequestParam(value = "size", required = false) Integer size) {
-        List<Account> accounts = accountService.listByTenantId(tenantId);
+            @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+            @RequestParam(value = "size", required = false, defaultValue = "20") Integer size) {
+        Integer total = accountService.countByTenantId(tenantId);
+        List<Account> accounts = accountService.listByTenantId(tenantId, (page - 1) * size, size);
         for (Account account : accounts) {
             account.setPassword(null);
             account.setSalt(null);
         }
-        return APIResponse.success(accounts);
+        return APIResponse.withPagination(accounts, total, page, size);
     }
 
     @ApiOperation(value = "创建新账户", notes = "")

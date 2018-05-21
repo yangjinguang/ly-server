@@ -1,6 +1,7 @@
 package com.liyu.server.service.impl;
 
 import com.liyu.server.service.RoleService;
+import com.liyu.server.tables.pojos.Account;
 import com.liyu.server.tables.pojos.Role;
 import com.liyu.server.tables.records.RoleRecord;
 import com.liyu.server.utils.CommonUtils;
@@ -13,7 +14,9 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.List;
 
+import static com.liyu.server.tables.Account.ACCOUNT;
 import static com.liyu.server.tables.Role.ROLE;
+import static com.liyu.server.tables.RoleAccount.ROLE_ACCOUNT;
 
 @Slf4j
 @Service
@@ -78,5 +81,33 @@ public class RoleServiceImpl implements RoleService {
         }
         roleRecord.update();
         return roleRecord.into(Role.class);
+    }
+
+    @Override
+    public Role detail(ULong id) {
+        return context.selectFrom(ROLE)
+                .where(ROLE.ID.eq(id))
+                .fetchOptional()
+                .orElseThrow(() -> new NoDataFoundException("未找到角色"))
+                .into(Role.class);
+    }
+
+    @Override
+    public Integer membersCount(String roleId) {
+        return context.selectCount().from(ROLE_ACCOUNT)
+                .where(ROLE_ACCOUNT.ROLE_ID.eq(roleId))
+                .fetchOne()
+                .into(int.class);
+    }
+
+    @Override
+    public List<Account> members(String roleId, Integer offset, Integer size) {
+        return context.select(ACCOUNT.fields())
+                .from(ROLE_ACCOUNT)
+                .leftJoin(ACCOUNT)
+                .on(ACCOUNT.ACCOUNT_ID.eq(ROLE_ACCOUNT.ACCOUNT_ID))
+                .where(ROLE_ACCOUNT.ROLE_ID.eq(roleId))
+                .fetch()
+                .into(Account.class);
     }
 }

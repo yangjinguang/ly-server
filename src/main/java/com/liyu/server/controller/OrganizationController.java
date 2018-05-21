@@ -148,16 +148,20 @@ public class OrganizationController {
     @RequestMapping(value = "/{id}/accounts", method = RequestMethod.GET)
     public APIResponse list(@PathVariable(value = "id", required = true) Long id,
                             @RequestParam(value = "deep", required = false) Boolean deep,
-                            @RequestParam(value = "page", required = false) Integer page,
-                            @RequestParam(value = "size", required = false) Integer size) {
+                            @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+                            @RequestParam(value = "size", required = false, defaultValue = "20") Integer size) {
         Organization organization = organizationService.byId(ULong.valueOf(id));
-        List<Account> accounts = new ArrayList<>();
+        List<Account> accounts;
+        Integer total;
         if (deep) {
-            accounts = organizationService.accountsDeep(organization.getOrganizationId());
+            List<String> ids = organizationService.getAllChildrenOrganizationIds(organization.getOrganizationId());
+            total = organizationService.accountDeepCount(ids);
+            accounts = organizationService.accountsDeep(ids, (page - 1) * size, size);
         } else {
-            accounts = organizationService.accounts(organization.getOrganizationId());
+            total = organizationService.accountsCount(organization.getOrganizationId());
+            accounts = organizationService.accounts(organization.getOrganizationId(), (page - 1) * size, size);
         }
-        return APIResponse.success(accounts);
+        return APIResponse.withPagination(accounts, total, page, size);
     }
 
     @ApiOperation(value = "组织排序", notes = "")

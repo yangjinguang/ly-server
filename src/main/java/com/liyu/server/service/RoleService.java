@@ -1,5 +1,6 @@
 package com.liyu.server.service;
 
+import com.liyu.server.tables.pojos.Account;
 import com.liyu.server.tables.pojos.Role;
 import org.jooq.types.ULong;
 
@@ -44,5 +45,38 @@ public interface RoleService {
      */
     void delete(ULong id);
 
+    /**
+     * 停用禁用角色
+     *
+     * @param id
+     * @param enabled
+     * @return
+     */
     Role enabledOrDisabled(ULong id, Boolean enabled);
+
+    /**
+     * 角色详细信息
+     *
+     * @param id
+     * @return
+     */
+    Role detail(ULong id);
+
+    /**
+     * 角色绑定的账户个数
+     *
+     * @param roleId
+     * @return
+     */
+    Integer membersCount(String roleId);
+
+    /**
+     * 角色绑定的账户列表
+     *
+     * @param roleId
+     * @param offset
+     * @param size
+     * @return
+     */
+    List<Account> members(String roleId, Integer offset, Integer size);
 }

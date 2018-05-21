@@ -1,6 +1,7 @@
 package com.liyu.server.controller;
 
 import com.liyu.server.service.RoleService;
+import com.liyu.server.tables.pojos.Account;
 import com.liyu.server.tables.pojos.Role;
 import com.liyu.server.utils.APIResponse;
 import io.swagger.annotations.Api;
@@ -76,5 +77,32 @@ public class RoleController {
                                          @PathVariable(value = "enabled", required = true) Boolean enabled) {
         Role role = roleService.enabledOrDisabled(ULong.valueOf(id), enabled);
         return APIResponse.success(role);
+    }
+
+    @ApiOperation(value = "角色详细信息", notes = "")
+    @ResponseBody
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "角色ID", required = true, dataType = "Long", paramType = "path"),
+    })
+    @RequestMapping(value = "/{id}/detail", method = RequestMethod.GET)
+    public APIResponse detail(@PathVariable(value = "id", required = true) Long id) {
+        Role role = roleService.detail(ULong.valueOf(id));
+        return APIResponse.success(role);
+    }
+
+    @ApiOperation(value = "角色绑定的账户列表", notes = "")
+    @ResponseBody
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "roleId", value = "角色ID", required = true, dataType = "String", paramType = "path"),
+            @ApiImplicitParam(name = "page", value = "页码", required = false, dataType = "int", paramType = "query"),
+            @ApiImplicitParam(name = "size", value = "每页条数", required = false, dataType = "int", paramType = "query")
+    })
+    @RequestMapping(value = "/{roleId}/members", method = RequestMethod.GET)
+    public APIResponse members(@PathVariable(value = "roleId", required = true) String roleId,
+                               @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+                               @RequestParam(value = "size", required = false, defaultValue = "20") Integer size) {
+        Integer total = roleService.membersCount(roleId);
+        List<Account> members = roleService.members(roleId, (page - 1) * size, size);
+        return APIResponse.withPagination(members, total, page, size);
     }
 }

@@ -108,12 +108,23 @@ public interface OrganizationService {
     void unbindAccount(String organizationId, String accountId);
 
     /**
+     * 根据组织ID获取账户个数
+     *
+     * @param organizationId
+     * @return
+     */
+    Integer accountsCount(String organizationId);
+
+    /**
      * 根据组织ID获取账户列表
      *
-     * @param organizationId 组织ID
-     * @return List<Account>
+     * @param organizationId
+     * @param offset
+     * @param size
+     * @return
      */
-    List<Account> accounts(String organizationId);
+    List<Account> accounts(String organizationId, Integer offset, Integer size);
+
 
     /**
      * 获取所有所有子节点ID
@@ -124,12 +135,22 @@ public interface OrganizationService {
     List<String> getAllChildrenOrganizationIds(String organizationId);
 
     /**
+     * 获取当前及其所有子节点的账户个数
+     *
+     * @param ids
+     * @return
+     */
+    Integer accountDeepCount(List<String> ids);
+
+    /**
      * 获取当前及其所有子节点的账户列表
      *
-     * @param organizationId 组织ID
-     * @return List<Account>
+     * @param ids
+     * @param offset
+     * @param size
+     * @return
      */
-    List<Account> accountsDeep(String organizationId);
+    List<Account> accountsDeep(List<String> ids, Integer offset, Integer size);
 
     /**
      * 排序
