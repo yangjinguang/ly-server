@@ -285,9 +285,6 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Override
     public List<Account> accountsDeep(List<String> ids, Integer offset, Integer size) {
-//        List<String> ids = this.getAllChildrenOrganizationIds(organizationId);
-//        ids.add(organizationId);
-//        ids = new ArrayList<String>(new HashSet<>(ids));
         return context.select(ACCOUNT.fields())
                 .from(ORGANIZATION_ACCOUNT)
                 .leftJoin(ACCOUNT)
