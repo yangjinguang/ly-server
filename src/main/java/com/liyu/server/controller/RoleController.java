@@ -2,7 +2,7 @@ package com.liyu.server.controller;
 
 import com.liyu.server.model.RoleBindMembersBody;
 import com.liyu.server.service.RoleService;
-import com.liyu.server.tables.pojos.Account;
+import com.liyu.server.tables.Contact;
 import com.liyu.server.tables.pojos.Role;
 import com.liyu.server.utils.APIResponse;
 import io.swagger.annotations.Api;
@@ -91,7 +91,7 @@ public class RoleController {
         return APIResponse.success(role);
     }
 
-    @ApiOperation(value = "角色绑定的账户列表", notes = "")
+    @ApiOperation(value = "角色成员列表", notes = "")
     @ResponseBody
     @ApiImplicitParams({
             @ApiImplicitParam(name = "roleId", value = "角色ID", required = true, dataType = "String", paramType = "path"),
@@ -103,11 +103,11 @@ public class RoleController {
                                @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
                                @RequestParam(value = "size", required = false, defaultValue = "20") Integer size) {
         Integer total = roleService.membersCount(roleId);
-        List<Account> members = roleService.members(roleId, (page - 1) * size, size);
+        List<Contact> members = roleService.members(roleId, (page - 1) * size, size);
         return APIResponse.withPagination(members, total, page, size);
     }
 
-    @ApiOperation(value = "角色绑定账户", notes = "")
+    @ApiOperation(value = "角色绑定联系人", notes = "")
     @ResponseBody
     @ApiImplicitParams({
             @ApiImplicitParam(name = "roleId", value = "角色ID", required = true, dataType = "String", paramType = "path"),
@@ -116,7 +116,7 @@ public class RoleController {
     @RequestMapping(value = "/{roleId}/bindMembers", method = RequestMethod.PUT)
     public APIResponse bindMembers(@PathVariable(value = "roleId", required = true) String roleId,
                                    @RequestBody RoleBindMembersBody bindBody) {
-        roleService.bindMembers(roleId, bindBody.getAccountIds());
+        roleService.bindMembers(roleId, bindBody.getContactIds());
         return APIResponse.success("success");
     }
 
@@ -129,7 +129,7 @@ public class RoleController {
     @RequestMapping(value = "/{roleId}/unBindMembers", method = RequestMethod.PUT)
     public APIResponse unBindMembers(@PathVariable(value = "roleId", required = true) String roleId,
                                      @RequestBody RoleBindMembersBody bindBody) {
-        roleService.unBindMembers(roleId, bindBody.getAccountIds());
+        roleService.unBindMembers(roleId, bindBody.getContactIds());
         return APIResponse.success("success");
     }
 }

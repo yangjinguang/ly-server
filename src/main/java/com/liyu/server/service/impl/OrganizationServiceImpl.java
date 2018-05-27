@@ -1,10 +1,10 @@
 package com.liyu.server.service.impl;
 
-import com.liyu.server.enums.AccountStatusEnum;
+import com.liyu.server.enums.ContactStatusEnum;
 import com.liyu.server.model.OrganizationDetail;
 import com.liyu.server.model.OrganizationTree;
 import com.liyu.server.service.OrganizationService;
-import com.liyu.server.tables.pojos.Account;
+import com.liyu.server.tables.pojos.Contact;
 import com.liyu.server.tables.pojos.Organization;
 import com.liyu.server.tables.records.OrganizationRecord;
 import com.liyu.server.utils.CommonUtils;
@@ -18,9 +18,9 @@ import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.util.*;
 
-import static com.liyu.server.tables.Account.ACCOUNT;
+import static com.liyu.server.tables.Contact.CONTACT;
 import static com.liyu.server.tables.Organization.ORGANIZATION;
-import static com.liyu.server.tables.OrganizationAccount.ORGANIZATION_ACCOUNT;
+import static com.liyu.server.tables.OrganizationContact.ORGANIZATION_CONTACT;
 
 @Slf4j
 @Service
@@ -212,46 +212,46 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public void delete(String organizationId) {
         context.deleteFrom(ORGANIZATION).where(ORGANIZATION.ORGANIZATION_ID.eq(organizationId)).execute();
-        context.deleteFrom(ORGANIZATION_ACCOUNT).where(ORGANIZATION_ACCOUNT.ORGANIZATION_ID.eq(organizationId)).execute();
+        context.deleteFrom(ORGANIZATION_CONTACT).where(ORGANIZATION_CONTACT.ORGANIZATION_ID.eq(organizationId)).execute();
     }
 
     @Override
-    public void bindAccount(String organizationId, String accountId) {
-        Integer count = context.selectCount().from(ORGANIZATION_ACCOUNT).where(ORGANIZATION_ACCOUNT.ORGANIZATION_ID.eq(organizationId), ORGANIZATION_ACCOUNT.ACCOUNT_ID.eq(accountId)).fetchOne().into(int.class);
+    public void bindContact(String organizationId, String contactId) {
+        Integer count = context.selectCount().from(ORGANIZATION_CONTACT).where(ORGANIZATION_CONTACT.ORGANIZATION_ID.eq(organizationId), ORGANIZATION_CONTACT.CONTACT_ID.eq(contactId)).fetchOne().into(int.class);
         if (count <= 0) {
-            context.insertInto(ORGANIZATION_ACCOUNT).columns(
-                    ORGANIZATION_ACCOUNT.ORGANIZATION_ID,
-                    ORGANIZATION_ACCOUNT.ACCOUNT_ID
+            context.insertInto(ORGANIZATION_CONTACT).columns(
+                    ORGANIZATION_CONTACT.ORGANIZATION_ID,
+                    ORGANIZATION_CONTACT.CONTACT_ID
             ).values(
                     organizationId,
-                    accountId
+                    contactId
             ).execute();
         }
     }
 
     @Override
-    public void unbindAccount(String organizationId, String accountId) {
-        context.deleteFrom(ORGANIZATION_ACCOUNT).where(ORGANIZATION_ACCOUNT.ORGANIZATION_ID.eq(organizationId), ORGANIZATION_ACCOUNT.ACCOUNT_ID.eq(accountId)).execute();
+    public void unbindContact(String organizationId, String contactId) {
+        context.deleteFrom(ORGANIZATION_CONTACT).where(ORGANIZATION_CONTACT.ORGANIZATION_ID.eq(organizationId), ORGANIZATION_CONTACT.CONTACT_ID.eq(contactId)).execute();
     }
 
     @Override
-    public Integer accountsCount(String organizationId) {
-        return context.selectCount().from(ORGANIZATION_ACCOUNT)
-                .where(ORGANIZATION_ACCOUNT.ORGANIZATION_ID.eq(organizationId))
+    public Integer contactsCount(String organizationId) {
+        return context.selectCount().from(ORGANIZATION_CONTACT)
+                .where(ORGANIZATION_CONTACT.ORGANIZATION_ID.eq(organizationId))
                 .fetchOne()
                 .into(int.class);
     }
 
     @Override
-    public List<Account> accounts(String organizationId, Integer offset, Integer size) {
-        return context.select(ACCOUNT.fields()).from(ORGANIZATION_ACCOUNT)
-                .leftJoin(ACCOUNT)
-                .on(ACCOUNT.ACCOUNT_ID.eq(ORGANIZATION_ACCOUNT.ACCOUNT_ID))
-                .where(ORGANIZATION_ACCOUNT.ORGANIZATION_ID.eq(organizationId), ACCOUNT.STATUS.notEqual(AccountStatusEnum.DELETED))
+    public List<Contact> contacts(String organizationId, Integer offset, Integer size) {
+        return context.select(CONTACT.fields()).from(ORGANIZATION_CONTACT)
+                .leftJoin(CONTACT)
+                .on(CONTACT.CONTACT_ID.eq(ORGANIZATION_CONTACT.CONTACT_ID))
+                .where(ORGANIZATION_CONTACT.ORGANIZATION_ID.eq(organizationId), CONTACT.STATUS.notEqual(ContactStatusEnum.DELETED))
                 .offset(offset)
                 .limit(size)
                 .fetch()
-                .into(Account.class);
+                .into(Contact.class);
     }
 
     private void getChildrenOrganizationIds(String organizationId, List<String> resIds) {
@@ -274,26 +274,26 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
-    public Integer accountDeepCount(List<String> ids) {
-        return context.selectCount().from(ORGANIZATION_ACCOUNT)
-                .leftJoin(ACCOUNT)
-                .on(ACCOUNT.ACCOUNT_ID.eq(ORGANIZATION_ACCOUNT.ACCOUNT_ID))
-                .where(ORGANIZATION_ACCOUNT.ORGANIZATION_ID.in(ids), ACCOUNT.STATUS.notEqual(AccountStatusEnum.DELETED))
+    public Integer contactDeepCount(List<String> ids) {
+        return context.selectCount().from(ORGANIZATION_CONTACT)
+                .leftJoin(CONTACT)
+                .on(CONTACT.CONTACT_ID.eq(ORGANIZATION_CONTACT.CONTACT_ID))
+                .where(ORGANIZATION_CONTACT.ORGANIZATION_ID.in(ids), CONTACT.STATUS.notEqual(ContactStatusEnum.DELETED))
                 .fetchOne()
                 .into(int.class);
     }
 
     @Override
-    public List<Account> accountsDeep(List<String> ids, Integer offset, Integer size) {
-        return context.select(ACCOUNT.fields())
-                .from(ORGANIZATION_ACCOUNT)
-                .leftJoin(ACCOUNT)
-                .on(ACCOUNT.ACCOUNT_ID.eq(ORGANIZATION_ACCOUNT.ACCOUNT_ID))
-                .where(ORGANIZATION_ACCOUNT.ORGANIZATION_ID.in(ids), ACCOUNT.STATUS.notEqual(AccountStatusEnum.DELETED))
+    public List<Contact> contactsDeep(List<String> ids, Integer offset, Integer size) {
+        return context.select(CONTACT.fields())
+                .from(ORGANIZATION_CONTACT)
+                .leftJoin(CONTACT)
+                .on(CONTACT.CONTACT_ID.eq(ORGANIZATION_CONTACT.CONTACT_ID))
+                .where(ORGANIZATION_CONTACT.ORGANIZATION_ID.in(ids), CONTACT.STATUS.notEqual(ContactStatusEnum.DELETED))
                 .offset(offset)
                 .limit(size)
                 .fetch()
-                .into(Account.class);
+                .into(Contact.class);
     }
 
     @Override
@@ -305,5 +305,15 @@ public class OrganizationServiceImpl implements OrganizationService {
                     .where(ORGANIZATION.ID.eq(id))
                     .execute();
         }
+    }
+
+    @Override
+    public List<Organization> listByContactId(String contactId) {
+        return context.select(ORGANIZATION.fields())
+                .from(ORGANIZATION_CONTACT)
+                .leftJoin(ORGANIZATION)
+                .on(ORGANIZATION_CONTACT.ORGANIZATION_ID.eq(ORGANIZATION.ORGANIZATION_ID))
+                .where(ORGANIZATION_CONTACT.CONTACT_ID.eq(contactId))
+                .fetch().into(Organization.class);
     }
 }

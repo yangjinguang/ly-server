@@ -2,7 +2,7 @@ package com.liyu.server.service;
 
 import com.liyu.server.model.OrganizationDetail;
 import com.liyu.server.model.OrganizationTree;
-import com.liyu.server.tables.pojos.Account;
+import com.liyu.server.tables.pojos.Contact;
 import com.liyu.server.tables.pojos.Organization;
 import org.jooq.types.ULong;
 
@@ -97,7 +97,7 @@ public interface OrganizationService {
      * @param organizationId 组织ID
      * @param accountId      帐号ID
      */
-    void bindAccount(String organizationId, String accountId);
+    void bindContact(String organizationId, String accountId);
 
     /**
      * 取消帐号绑定
@@ -105,7 +105,7 @@ public interface OrganizationService {
      * @param organizationId 组织ID
      * @param accountId      帐号ID
      */
-    void unbindAccount(String organizationId, String accountId);
+    void unbindContact(String organizationId, String accountId);
 
     /**
      * 根据组织ID获取账户个数
@@ -113,7 +113,7 @@ public interface OrganizationService {
      * @param organizationId
      * @return
      */
-    Integer accountsCount(String organizationId);
+    Integer contactsCount(String organizationId);
 
     /**
      * 根据组织ID获取账户列表
@@ -123,7 +123,7 @@ public interface OrganizationService {
      * @param size
      * @return
      */
-    List<Account> accounts(String organizationId, Integer offset, Integer size);
+    List<Contact> contacts(String organizationId, Integer offset, Integer size);
 
 
     /**
@@ -140,7 +140,7 @@ public interface OrganizationService {
      * @param ids
      * @return
      */
-    Integer accountDeepCount(List<String> ids);
+    Integer contactDeepCount(List<String> ids);
 
     /**
      * 获取当前及其所有子节点的账户列表
@@ -150,7 +150,7 @@ public interface OrganizationService {
      * @param size
      * @return
      */
-    List<Account> accountsDeep(List<String> ids, Integer offset, Integer size);
+    List<Contact> contactsDeep(List<String> ids, Integer offset, Integer size);
 
     /**
      * 排序
@@ -158,4 +158,6 @@ public interface OrganizationService {
      * @param ids
      */
     void changeOrder(List<ULong> ids);
+
+    List<Organization> listByContactId(String contactId);
 }

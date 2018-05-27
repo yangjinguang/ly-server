@@ -5,7 +5,7 @@ import com.liyu.server.model.OrganizationOrderBody;
 import com.liyu.server.model.OrganizationTree;
 import com.liyu.server.service.AccountService;
 import com.liyu.server.service.OrganizationService;
-import com.liyu.server.tables.pojos.Account;
+import com.liyu.server.tables.pojos.Contact;
 import com.liyu.server.tables.pojos.Organization;
 import com.liyu.server.utils.APIResponse;
 import io.swagger.annotations.Api;
@@ -105,7 +105,7 @@ public class OrganizationController {
         return APIResponse.success("success");
     }
 
-    @ApiOperation(value = "绑定账户", notes = "")
+    @ApiOperation(value = "绑定联系人", notes = "")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "ID", required = true, dataType = "Long", paramType = "path"),
             @ApiImplicitParam(name = "accountIds", value = "用户ID列表", required = true, dataType = "List<String>", paramType = "body"),
@@ -116,28 +116,28 @@ public class OrganizationController {
         Organization organization = organizationService.byId(ULong.valueOf(id));
         for (String accountId : accountIds) {
             log.info("bind accountId: " + accountId);
-            organizationService.bindAccount(organization.getOrganizationId(), accountId);
+            organizationService.bindContact(organization.getOrganizationId(), accountId);
         }
         return APIResponse.success("success");
     }
 
-    @ApiOperation(value = "取消绑定账户", notes = "")
+    @ApiOperation(value = "取消绑定联系人", notes = "")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "ID", required = true, dataType = "Long", paramType = "path"),
-            @ApiImplicitParam(name = "accountIds", value = "用户ID列表", required = true, dataType = "List<String>", paramType = "body"),
+            @ApiImplicitParam(name = "contactIds", value = "联系人ID列表", required = true, dataType = "List<String>", paramType = "body"),
     })
-    @RequestMapping(value = "/{id}/unbindAccounts", method = RequestMethod.PUT)
+    @RequestMapping(value = "/{id}/unbindContacts", method = RequestMethod.PUT)
     public APIResponse unbindAccounts(@PathVariable Long id,
-                                      @RequestBody List<String> accountIds) {
+                                      @RequestBody List<String> contactIds) {
         Organization organization = organizationService.byId(ULong.valueOf(id));
-        for (String accountId : accountIds) {
-            log.info("unbind accountId: " + accountId);
-            organizationService.unbindAccount(organization.getOrganizationId(), accountId);
+        for (String contactId : contactIds) {
+            log.info("unbind contactId: " + contactId);
+            organizationService.unbindContact(organization.getOrganizationId(), contactId);
         }
         return APIResponse.success("success");
     }
 
-    @ApiOperation(value = "组织绑定的账户列表", notes = "")
+    @ApiOperation(value = "组织绑定的联系人列表", notes = "")
     @ResponseBody
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "id", required = true, dataType = "Long", paramType = "path"),
@@ -145,23 +145,23 @@ public class OrganizationController {
             @ApiImplicitParam(name = "page", value = "页码", required = false, dataType = "int", paramType = "query"),
             @ApiImplicitParam(name = "size", value = "每页条数", required = false, dataType = "int", paramType = "query")
     })
-    @RequestMapping(value = "/{id}/accounts", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}/contacts", method = RequestMethod.GET)
     public APIResponse list(@PathVariable(value = "id", required = true) Long id,
                             @RequestParam(value = "deep", required = false) Boolean deep,
                             @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
                             @RequestParam(value = "size", required = false, defaultValue = "20") Integer size) {
         Organization organization = organizationService.byId(ULong.valueOf(id));
-        List<Account> accounts;
+        List<Contact> contacts;
         Integer total;
         if (deep) {
             List<String> ids = organizationService.getAllChildrenOrganizationIds(organization.getOrganizationId());
-            total = organizationService.accountDeepCount(ids);
-            accounts = organizationService.accountsDeep(ids, (page - 1) * size, size);
+            total = organizationService.contactDeepCount(ids);
+            contacts = organizationService.contactsDeep(ids, (page - 1) * size, size);
         } else {
-            total = organizationService.accountsCount(organization.getOrganizationId());
-            accounts = organizationService.accounts(organization.getOrganizationId(), (page - 1) * size, size);
+            total = organizationService.contactsCount(organization.getOrganizationId());
+            contacts = organizationService.contacts(organization.getOrganizationId(), (page - 1) * size, size);
         }
-        return APIResponse.withPagination(accounts, total, page, size);
+        return APIResponse.withPagination(contacts, total, page, size);
     }
 
     @ApiOperation(value = "组织排序", notes = "")

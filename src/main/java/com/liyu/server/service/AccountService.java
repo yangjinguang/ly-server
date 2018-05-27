@@ -1,9 +1,7 @@
 package com.liyu.server.service;
 
-import com.liyu.server.enums.AccountStatusEnum;
-import com.liyu.server.model.AccountDetail;
+import com.liyu.server.model.ContactDetail;
 import com.liyu.server.tables.pojos.Account;
-import com.liyu.server.tables.pojos.Organization;
 import org.jooq.types.ULong;
 
 import java.util.List;
@@ -11,29 +9,36 @@ import java.util.List;
 public interface AccountService {
 
     /**
+     * 获取所有帐号条数
+     *
+     * @return Integer
+     */
+    Integer count();
+
+    /**
      * 获取所有帐号
      *
      * @return List<Account>
      */
-    List<Account> list();
+    List<Account> list(Integer offset, Integer size);
 
-    /**
-     * 根据租户ID获取账户列表
-     *
-     * @param tenantId
-     * @param offset
-     * @param size
-     * @return
-     */
-    List<Account> listByTenantId(String tenantId, Integer offset, Integer size);
-
-    /**
-     * 根据租户ID获取账户个数
-     *
-     * @param tenantId
-     * @return
-     */
-    Integer countByTenantId(String tenantId);
+//    /**
+//     * 根据租户ID获取账户列表
+//     *
+//     * @param tenantId
+//     * @param offset
+//     * @param size
+//     * @return
+//     */
+//    List<Account> listByTenantId(String tenantId, Integer offset, Integer size);
+//
+//    /**
+//     * 根据租户ID获取账户个数
+//     *
+//     * @param tenantId
+//     * @return
+//     */
+//    Integer countByTenantId(String tenantId);
 
     /**
      * 根据username password获取用户
@@ -44,6 +49,8 @@ public interface AccountService {
      * @return Account
      */
     Account getByUsernameAndPassword(String username, String password);
+
+    Account getByAccountId(String accountId);
 
     /**
      * 根据username获取用户
@@ -67,7 +74,7 @@ public interface AccountService {
      * @param newAccount 账户详情
      * @return Account
      */
-    Account create(AccountDetail newAccount);
+    Account create(Account newAccount);
 
     /**
      * 更新账户信息
@@ -76,7 +83,7 @@ public interface AccountService {
      * @param newAccount 账户数据
      * @return Account
      */
-    Account update(ULong id, AccountDetail newAccount);
+    Account update(ULong id, Account newAccount);
 
     /**
      * 删除帐号
@@ -85,43 +92,43 @@ public interface AccountService {
      */
     void delete(ULong id);
 
-    /**
-     * 绑定账户到组织
-     *
-     * @param accountId      账户ID
-     * @param organizationId 组织ID
-     */
-    void bindOrganization(String accountId, String organizationId);
-
-    /**
-     * 批量绑定账户到组织
-     *
-     * @param accountId       账户ID
-     * @param organizationIds 组织ID列表
-     */
-    void bindOrganizations(String accountId, List<String> organizationIds);
-
-    /**
-     * 删除账户所有绑定部门
-     *
-     * @param accountId 账户ID
-     */
-    void unbindOrganizationsAll(String accountId);
-
-    /**
-     * 获取用户关联的组织列表
-     *
-     * @param accountId 账户ID
-     * @return List<Organization>
-     */
-    List<Organization> organizations(String accountId);
-
-    /**
-     * 更改账户状态
-     *
-     * @param id     ID
-     * @param status 状态
-     * @return Account
-     */
-    Account changeStatus(ULong id, AccountStatusEnum status);
+//    /**
+//     * 绑定账户到组织
+//     *
+//     * @param accountId      账户ID
+//     * @param organizationId 组织ID
+//     */
+//    void bindOrganization(String accountId, String organizationId);
+//
+//    /**
+//     * 批量绑定账户到组织
+//     *
+//     * @param accountId       账户ID
+//     * @param organizationIds 组织ID列表
+//     */
+//    void bindOrganizations(String accountId, List<String> organizationIds);
+//
+//    /**
+//     * 删除账户所有绑定部门
+//     *
+//     * @param accountId 账户ID
+//     */
+//    void unbindOrganizationsAll(String accountId);
+//
+//    /**
+//     * 获取用户关联的组织列表
+//     *
+//     * @param accountId 账户ID
+//     * @return List<Organization>
+//     */
+//    List<Organization> organizations(String accountId);
+//
+//    /**
+//     * 更改账户状态
+//     *
+//     * @param id     ID
+//     * @param status 状态
+//     * @return Account
+//     */
+//    Account changeStatus(ULong id, AccountStatusEnum status);
 }

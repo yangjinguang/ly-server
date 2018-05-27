@@ -1,6 +1,5 @@
 package com.liyu.server.controller;
 
-import com.liyu.server.service.AccountService;
 import com.liyu.server.service.OrganizationService;
 import com.liyu.server.service.TenantService;
 import com.liyu.server.tables.pojos.Organization;
@@ -26,8 +25,6 @@ import java.util.List;
 public class TenantController {
     @Resource
     private TenantService tenantService;
-    @Resource
-    private AccountService accountService;
     @Resource
     private OrganizationService organizationService;
 
@@ -84,7 +81,7 @@ public class TenantController {
     @RequestMapping(value = "/current", method = RequestMethod.GET)
     public APIResponse tenants(HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
-        List<Tenant> tenants = tenantService.byAccountUsername(principal.getName());
+        List<Tenant> tenants = tenantService.byAccountId(principal.getName());
         return APIResponse.success(tenants);
     }
 }

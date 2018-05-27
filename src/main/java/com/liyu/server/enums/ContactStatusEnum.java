@@ -2,14 +2,14 @@ package com.liyu.server.enums;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum AccountStatusEnum {
+public enum ContactStatusEnum {
     NORMAL("正常"),
     BLOCKED("已停用"),
     DELETED("已删除");
 
     final String desc;
 
-    AccountStatusEnum(String desc) {
+    ContactStatusEnum(String desc) {
         this.desc = desc;
     }
 

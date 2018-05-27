@@ -1,5 +1,6 @@
 package com.liyu.server.service;
 
+import com.liyu.server.tables.Contact;
 import com.liyu.server.tables.pojos.Account;
 import com.liyu.server.tables.pojos.Role;
 import org.jooq.types.ULong;
@@ -78,21 +79,21 @@ public interface RoleService {
      * @param size
      * @return
      */
-    List<Account> members(String roleId, Integer offset, Integer size);
+    List<Contact> members(String roleId, Integer offset, Integer size);
 
     /**
      * 绑定用户
      *
      * @param roleId
-     * @param accountIds
+     * @param contactIds
      */
-    void bindMembers(String roleId, List<String> accountIds);
+    void bindMembers(String roleId, List<String> contactIds);
 
     /**
      * 解绑用户
      *
      * @param roleId
-     * @param accountIds
+     * @param contactIds
      */
-    void unBindMembers(String roleId, List<String> accountIds);
+    void unBindMembers(String roleId, List<String> contactIds);
 }

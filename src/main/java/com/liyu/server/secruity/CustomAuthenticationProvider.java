@@ -1,8 +1,11 @@
 package com.liyu.server.secruity;
 
 import com.liyu.server.service.AccountService;
+import com.liyu.server.service.ContactService;
 import com.liyu.server.service.impl.AccountServiceImpl;
 import com.liyu.server.tables.pojos.Account;
+import com.liyu.server.tables.pojos.Contact;
+import com.liyu.server.utils.APIResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
@@ -16,7 +19,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Slf4j
@@ -24,6 +30,8 @@ import java.util.List;
 public class CustomAuthenticationProvider implements AuthenticationProvider {
     @Resource
     private AccountService accountService;
+    @Resource
+    private ContactService contactService;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -33,12 +41,9 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         // 认证逻辑
         Account account = accountService.getByUsernameAndPassword(name, password);
         if (account != null) {
-            // 这里设置权限和角色
             ArrayList<GrantedAuthority> authorities = new ArrayList<>();
-//            authorities.add(new GrantedAuthorityImpl("ROLE_ADMIN"));
             authorities.add(new GrantedAuthorityImpl("AUTH_WRITE"));
-            // 生成令牌
-            return new UsernamePasswordAuthenticationToken(account.getUsername(), account.getPassword(), authorities);
+            return new UsernamePasswordAuthenticationToken(account.getAccountId(), account, authorities);
         } else {
             throw new BadCredentialsException("Unauthorized");
         }

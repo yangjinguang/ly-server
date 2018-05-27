@@ -241,7 +241,7 @@
                                 </forcedType>
                                 <forcedType>
                                     <name>BOOLEAN</name>
-                                    <expression>.*.account.is_admin</expression>
+                                    <expression>.*.contact.is_admin</expression>
                                 </forcedType>
                                 <forcedType>
                                     <name>BOOLEAN</name>
@@ -256,9 +256,14 @@
                                     <expression>.*.tenant.enabled</expression>
                                 </forcedType>
                                 <forcedType>
-                                    <userType>com.liyu.server.enums.AccountStatusEnum</userType>
+                                    <userType>com.liyu.server.enums.ContactStatusEnum</userType>
                                     <enumConverter>true</enumConverter>
-                                    <expression>.*.account.status</expression>
+                                    <expression>.*.contact.status</expression>
+                                </forcedType>
+                                <forcedType>
+                                    <userType>com.liyu.server.enums.ContactTypeEnum</userType>
+                                    <enumConverter>true</enumConverter>
+                                    <expression>.*.contact.contact_type</expression>
                                 </forcedType>
                             </forcedTypes>
                         </database>

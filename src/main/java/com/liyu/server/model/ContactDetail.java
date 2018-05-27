@@ -1,19 +1,19 @@
 package com.liyu.server.model;
 
 import com.liyu.server.tables.Role;
-import com.liyu.server.tables.pojos.Account;
+import com.liyu.server.tables.pojos.Contact;
 
 import java.util.List;
 
-public class AccountDetail extends Account {
+public class ContactDetail extends Contact {
     private List<String> organizationIds;
     private List<OrganizationDetail> organizations;
     private List<Role> roles;
 
-    public AccountDetail() {
+    public ContactDetail() {
     }
 
-    public AccountDetail(Account value) {
+    public ContactDetail(Contact value) {
         super(value);
     }
 

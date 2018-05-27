@@ -41,23 +41,23 @@ public interface TenantService {
      * 根据用户ID获取租户列表
      *
      * @param accountId 帐号ID
-     * @return
-     */
-    List<Tenant> byAccountId(String accountId);
-
-    /**
-     * 绑定帐号
-     *
-     * @param tenantId  租户ID
-     * @param accountId 帐号ID
-     */
-    void bindAccount(String tenantId, String accountId);
-
-    /**
-     * 根据用户名查找租户
-     *
-     * @param username 用户名
      * @return List<Tenant>
      */
-    List<Tenant> byAccountUsername(String username);
+    List<Tenant> byAccountId(String accountId);
+//
+//    /**
+//     * 绑定帐号
+//     *
+//     * @param tenantId  租户ID
+//     * @param accountId 帐号ID
+//     */
+//    void bindContact(String tenantId, String accountId);
+//
+//    /**
+//     * 根据用户名查找租户
+//     *
+//     * @param username 用户名
+//     * @return List<Tenant>
+//     */
+//    List<Tenant> byAccountUsername(String username);
 }

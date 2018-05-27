@@ -1,6 +1,7 @@
 package com.liyu.server.service.impl;
 
 import com.liyu.server.service.RoleService;
+import com.liyu.server.tables.Contact;
 import com.liyu.server.tables.pojos.Account;
 import com.liyu.server.tables.pojos.Role;
 import com.liyu.server.tables.records.RoleRecord;
@@ -14,9 +15,9 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.List;
 
-import static com.liyu.server.tables.Account.ACCOUNT;
+import static com.liyu.server.tables.Contact.CONTACT;
 import static com.liyu.server.tables.Role.ROLE;
-import static com.liyu.server.tables.RoleAccount.ROLE_ACCOUNT;
+import static com.liyu.server.tables.RoleContact.ROLE_CONTACT;
 
 @Slf4j
 @Service
@@ -94,49 +95,49 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Integer membersCount(String roleId) {
-        return context.selectCount().from(ROLE_ACCOUNT)
-                .where(ROLE_ACCOUNT.ROLE_ID.eq(roleId))
+        return context.selectCount().from(ROLE_CONTACT)
+                .where(ROLE_CONTACT.ROLE_ID.eq(roleId))
                 .fetchOne()
                 .into(int.class);
     }
 
     @Override
-    public List<Account> members(String roleId, Integer offset, Integer size) {
-        return context.select(ACCOUNT.fields())
-                .from(ROLE_ACCOUNT)
-                .leftJoin(ACCOUNT)
-                .on(ACCOUNT.ACCOUNT_ID.eq(ROLE_ACCOUNT.ACCOUNT_ID))
-                .where(ROLE_ACCOUNT.ROLE_ID.eq(roleId))
+    public List<Contact> members(String roleId, Integer offset, Integer size) {
+        return context.select(CONTACT.fields())
+                .from(ROLE_CONTACT)
+                .leftJoin(CONTACT)
+                .on(CONTACT.CONTACT_ID.eq(ROLE_CONTACT.CONTACT_ID))
+                .where(ROLE_CONTACT.ROLE_ID.eq(roleId))
                 .offset(offset)
                 .limit(size)
                 .fetch()
-                .into(Account.class);
+                .into(Contact.class);
     }
 
     @Override
-    public void bindMembers(String roleId, List<String> accountIds) {
-        for (String accountId : accountIds) {
-            Integer count = context.selectCount().from(ROLE_ACCOUNT)
-                    .where(ROLE_ACCOUNT.ROLE_ID.eq(roleId), ROLE_ACCOUNT.ACCOUNT_ID.eq(accountId))
+    public void bindMembers(String roleId, List<String> contactIds) {
+        for (String contactId : contactIds) {
+            Integer count = context.selectCount().from(ROLE_CONTACT)
+                    .where(ROLE_CONTACT.ROLE_ID.eq(roleId), ROLE_CONTACT.CONTACT_ID.eq(contactId))
                     .fetchOne()
                     .into(int.class);
             if (count > 0) {
                 continue;
             }
-            context.insertInto(ROLE_ACCOUNT).columns(
-                    ROLE_ACCOUNT.ROLE_ID,
-                    ROLE_ACCOUNT.ACCOUNT_ID
+            context.insertInto(ROLE_CONTACT).columns(
+                    ROLE_CONTACT.ROLE_ID,
+                    ROLE_CONTACT.CONTACT_ID
             ).values(
                     roleId,
-                    accountId
+                    contactId
             ).execute();
         }
     }
 
     @Override
-    public void unBindMembers(String roleId, List<String> accountIds) {
-        context.deleteFrom(ROLE_ACCOUNT)
-                .where(ROLE_ACCOUNT.ROLE_ID.eq(roleId), ROLE_ACCOUNT.ACCOUNT_ID.in(accountIds))
+    public void unBindMembers(String roleId, List<String> contactIds) {
+        context.deleteFrom(ROLE_CONTACT)
+                .where(ROLE_CONTACT.ROLE_ID.eq(roleId), ROLE_CONTACT.CONTACT_ID.in(contactIds))
                 .execute();
     }
 }

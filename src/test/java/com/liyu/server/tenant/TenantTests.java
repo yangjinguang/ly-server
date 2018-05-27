@@ -26,15 +26,5 @@ public class TenantTests {
         tenantService.create(newTenant);
     }
 
-    @Test
-    public void bindAccount() {
-        tenantService.bindAccount("93d526b86529454599bdda86beb2dbb4", "0e8ca8ce14844c4893649afd2daff5ad");
-    }
-
-    @Test
-    public void getByAccountUsername() {
-        List<Tenant> tenants = tenantService.byAccountUsername("root");
-        log.info(tenants.toString());
-    }
 
 }

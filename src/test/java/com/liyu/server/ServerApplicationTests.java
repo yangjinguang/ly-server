@@ -1,13 +1,13 @@
 package com.liyu.server;
 
-import com.liyu.server.model.AccountDetail;
 import com.liyu.server.service.AccountService;
+import com.liyu.server.service.ContactService;
 import com.liyu.server.service.OrganizationService;
 import com.liyu.server.service.TenantService;
 import com.liyu.server.tables.pojos.Account;
+import com.liyu.server.tables.pojos.Contact;
 import com.liyu.server.tables.pojos.Organization;
 import com.liyu.server.tables.pojos.Tenant;
-import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,6 +27,8 @@ public class ServerApplicationTests {
     private AccountService accountService;
     @Resource
     private OrganizationService organizationService;
+    @Resource
+    private ContactService contactService;
 
     @Test
     public void contextLoads() {
@@ -59,7 +61,7 @@ public class ServerApplicationTests {
         Organization organization = organizationService.create(newOrganization);
 
         // 创建帐号
-        AccountDetail newAccount = new AccountDetail();
+        Account newAccount = new Account();
         newAccount.setUsername("root");
         newAccount.setPassword("123456");
         newAccount.setPhone("10000000000");
@@ -67,11 +69,20 @@ public class ServerApplicationTests {
         newAccount.setWxOpenId("");
         Account account = accountService.create(newAccount);
 
+        // 创建联系人
+        Contact newContact = new Contact();
+        newContact.setAccountId(account.getAccountId());
+        newContact.setName("超级管理员");
+        newContact.setEmail("root@ly.com");
+        newContact.setPhone("10000000000");
+        newContact.setTenantId(tenant.getTenantId());
+        Contact contact = contactService.create(newContact, account.getAccountId(), tenant.getTenantId());
+
         // 绑定帐号到租户
-        tenantService.bindAccount(tenant.getTenantId(), account.getAccountId());
+//        tenantService.bindAccount(tenant.getTenantId(), account.getAccountId());
 
         // 绑定帐号到组织
-        organizationService.bindAccount(organization.getOrganizationId(), account.getAccountId());
+        organizationService.bindContact(organization.getOrganizationId(), contact.getContactId());
     }
 
     @Test

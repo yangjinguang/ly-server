@@ -3,13 +3,13 @@ package com.liyu.server.model;
 import java.util.List;
 
 public class RoleBindMembersBody {
-    private List<String> accountIds;
+    private List<String> contactIds;
 
-    public List<String> getAccountIds() {
-        return accountIds;
+    public List<String> getContactIds() {
+        return contactIds;
     }
 
-    public void setAccountIds(List<String> accountIds) {
-        this.accountIds = accountIds;
+    public void setContactIds(List<String> contactIds) {
+        this.contactIds = contactIds;
     }
 }

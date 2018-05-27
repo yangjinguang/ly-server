@@ -1,6 +1,5 @@
 package com.liyu.server.secruity;
 
-import com.alibaba.fastjson.JSON;
 import com.liyu.server.utils.APIResponse;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -10,7 +9,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,22 +16,21 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
-public class TokenAuthenticationService {
+class TokenAuthenticationService {
     private static final long EXPIRATION_TIME = 432_000_000;     // 5天
     private static final String SECRET = "P@ssw02d";            // JWT密码
     private static final String TOKEN_PREFIX = "Bearer";        // Token前缀
     private static final String HEADER_STRING = "Authorization";// 存放Token的Header Key
 
-    static void addAuthentication(HttpServletResponse response, String username) {
+    static void addAuthentication(HttpServletResponse response, String accountId) {
         // 生成JWT
         String JWT = Jwts.builder()
                 // 保存权限（角色）
                 .claim("authorities", "ROLE_ADMIN,AUTH_WRITE")
                 // 用户名写入标题
-                .setSubject(username)
+                .setSubject(accountId)
                 // 有效期设置
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 // 签名设置
@@ -46,9 +43,8 @@ public class TokenAuthenticationService {
             response.setStatus(HttpServletResponse.SC_OK);
             HashMap<String, Object> jwtMap = new HashMap<>();
             jwtMap.put("token", JWT);
-            jwtMap.put("username", username);
+            jwtMap.put("accountId", accountId);
             APIResponse res = APIResponse.success(jwtMap);
-            log.info("res:");
             response.getWriter().write(res.toJSON());
         } catch (IOException e) {
             e.printStackTrace();
