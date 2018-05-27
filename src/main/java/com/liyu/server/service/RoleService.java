@@ -79,4 +79,20 @@ public interface RoleService {
      * @return
      */
     List<Account> members(String roleId, Integer offset, Integer size);
+
+    /**
+     * 绑定用户
+     *
+     * @param roleId
+     * @param accountIds
+     */
+    void bindMembers(String roleId, List<String> accountIds);
+
+    /**
+     * 解绑用户
+     *
+     * @param roleId
+     * @param accountIds
+     */
+    void unBindMembers(String roleId, List<String> accountIds);
 }

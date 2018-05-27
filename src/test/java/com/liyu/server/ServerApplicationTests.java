@@ -7,6 +7,7 @@ import com.liyu.server.service.TenantService;
 import com.liyu.server.tables.pojos.Account;
 import com.liyu.server.tables.pojos.Organization;
 import com.liyu.server.tables.pojos.Tenant;
+import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -71,6 +72,20 @@ public class ServerApplicationTests {
 
         // 绑定帐号到组织
         organizationService.bindAccount(organization.getOrganizationId(), account.getAccountId());
+    }
+
+    @Test
+    public void paginationTest() {
+        Integer total = 110;
+        Integer size = 10;
+        Integer page = 1;
+        int i = total % size;
+        log.info("%: " + i);
+        int totalPages = total / size;
+        if (i > 0) {
+            totalPages++;
+        }
+        log.info("totalPages:" + totalPages);
     }
 
 }

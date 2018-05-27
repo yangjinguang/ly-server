@@ -107,7 +107,36 @@ public class RoleServiceImpl implements RoleService {
                 .leftJoin(ACCOUNT)
                 .on(ACCOUNT.ACCOUNT_ID.eq(ROLE_ACCOUNT.ACCOUNT_ID))
                 .where(ROLE_ACCOUNT.ROLE_ID.eq(roleId))
+                .offset(offset)
+                .limit(size)
                 .fetch()
                 .into(Account.class);
+    }
+
+    @Override
+    public void bindMembers(String roleId, List<String> accountIds) {
+        for (String accountId : accountIds) {
+            Integer count = context.selectCount().from(ROLE_ACCOUNT)
+                    .where(ROLE_ACCOUNT.ROLE_ID.eq(roleId), ROLE_ACCOUNT.ACCOUNT_ID.eq(accountId))
+                    .fetchOne()
+                    .into(int.class);
+            if (count > 0) {
+                continue;
+            }
+            context.insertInto(ROLE_ACCOUNT).columns(
+                    ROLE_ACCOUNT.ROLE_ID,
+                    ROLE_ACCOUNT.ACCOUNT_ID
+            ).values(
+                    roleId,
+                    accountId
+            ).execute();
+        }
+    }
+
+    @Override
+    public void unBindMembers(String roleId, List<String> accountIds) {
+        context.deleteFrom(ROLE_ACCOUNT)
+                .where(ROLE_ACCOUNT.ROLE_ID.eq(roleId), ROLE_ACCOUNT.ACCOUNT_ID.in(accountIds))
+                .execute();
     }
 }

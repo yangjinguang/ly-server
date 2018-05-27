@@ -4,11 +4,20 @@ public class Pagination {
     private Integer total;
     private Integer page;
     private Integer size;
+    private Integer totalPages;
+    private Boolean last;
 
     public Pagination(Integer total, Integer page, Integer size) {
         this.total = total;
         this.page = page;
         this.size = size;
+        int i = total % size;
+        if (i > 0) {
+            this.totalPages = total / size + 1;
+        } else {
+            this.totalPages = total / size;
+        }
+        this.last = page >= this.totalPages;
     }
 
     public Integer getTotal() {
@@ -33,6 +42,22 @@ public class Pagination {
 
     public void setSize(Integer size) {
         this.size = size;
+    }
+
+    public Integer getTotalPages() {
+        return totalPages;
+    }
+
+    public void setTotalPages(Integer totalPages) {
+        this.totalPages = totalPages;
+    }
+
+    public Boolean getLast() {
+        return last;
+    }
+
+    public void setLast(Boolean last) {
+        this.last = last;
     }
 
     @Override

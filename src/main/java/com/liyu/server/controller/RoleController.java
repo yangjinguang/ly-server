@@ -1,5 +1,6 @@
 package com.liyu.server.controller;
 
+import com.liyu.server.model.RoleBindMembersBody;
 import com.liyu.server.service.RoleService;
 import com.liyu.server.tables.pojos.Account;
 import com.liyu.server.tables.pojos.Role;
@@ -104,5 +105,31 @@ public class RoleController {
         Integer total = roleService.membersCount(roleId);
         List<Account> members = roleService.members(roleId, (page - 1) * size, size);
         return APIResponse.withPagination(members, total, page, size);
+    }
+
+    @ApiOperation(value = "角色绑定账户", notes = "")
+    @ResponseBody
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "roleId", value = "角色ID", required = true, dataType = "String", paramType = "path"),
+            @ApiImplicitParam(name = "bindBody", value = "绑定数据", required = true, dataType = "RoleBindMembersBody", paramType = "body"),
+    })
+    @RequestMapping(value = "/{roleId}/bindMembers", method = RequestMethod.PUT)
+    public APIResponse bindMembers(@PathVariable(value = "roleId", required = true) String roleId,
+                                   @RequestBody RoleBindMembersBody bindBody) {
+        roleService.bindMembers(roleId, bindBody.getAccountIds());
+        return APIResponse.success("success");
+    }
+
+    @ApiOperation(value = "角色解绑账户", notes = "")
+    @ResponseBody
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "roleId", value = "角色ID", required = true, dataType = "String", paramType = "path"),
+            @ApiImplicitParam(name = "bindBody", value = "绑定数据", required = true, dataType = "RoleBindMembersBody", paramType = "body"),
+    })
+    @RequestMapping(value = "/{roleId}/unBindMembers", method = RequestMethod.PUT)
+    public APIResponse unBindMembers(@PathVariable(value = "roleId", required = true) String roleId,
+                                     @RequestBody RoleBindMembersBody bindBody) {
+        roleService.unBindMembers(roleId, bindBody.getAccountIds());
+        return APIResponse.success("success");
     }
 }
