@@ -14,5 +14,8 @@ spring:
     continue-on-error: true
   jooq:
       sql-dialect: mysql
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/ly-server
 
 logging.level.org.jooq: DEBUG
